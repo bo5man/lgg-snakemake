@@ -1,0 +1,17 @@
+paths:
+    all_idats: '../LGG_Methylation/data/allsamples/' # directory to all methylation idat-files, correspondents to data/allsamples/ in README, string
+    full_cohort: '../LGG_Methylation/data/utrecht_methy/' # path to directory of methylation idat-files of full cohort, correspondents to data/fullcohort/ in README, used to identify all samples in the full cohort, also used to create only CNV-plots of full cohort samples, string
+    out: '../output-lgg/results/' # directory of all output directory and files, string
+    log: '../output-lgg/log/' # directory of the log files, string
+    mnp: '../LGG_Methylation/mnp_training/' # directory of the cloned Github Repository of Heidelberg, string
+    overview: '../LGG_Methylation/Overview_oligodendroglioma_samples_long_vs_short_PFS_2021-07-14.xlsx' # path of clinical data of full cohort, string, assumed .xlsx
+    inhouse: '../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx' # path to clinical data of inhouse, string, assumed .xlsx
+
+probes:
+    probeset_gCIMP: '../LGG_Methylation/ProbeSet-gCIMP.xlsx' # path to probeset of gCIMP, string, assumed .xlsx
+    probeset_GLASS: '../LGG_Methylation/ProbeSet-GLASS.xlsx' # path to probesets of GLASS, string, assumed .xlsx
+    probeset_GLASS_treatment_related_sheetname: 'Treatment-related (N=620)' # name of sheet containing Treatment related probes, string
+    probeset_GLASS_hypermodulator_sheetname: 'IDHmut Hypermutator (N=342)' # name of sheet containing hypermodulator probes, string
+
+options:
+    suppressMessages: TRUE # supress messages of loading R-libraries, TRUE/FALSE
