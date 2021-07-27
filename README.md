@@ -1,13 +1,11 @@
-<!--
 <p align="center">
   <img width="100%" height="100%" src="https://github.com/tgac-vumc/lgg-snakemake/blob/master/DAG_all.svg">
 </p>
--->
 ## Installation
 
 For the installation of this pipeline any Python install compatable Conda is required.
 
-The pipeline itself will run on Python 3.9.5, snakemake 6.4.1 and R 4.0.5. For exact dependencies view `lgg-snakemake.yaml`.
+The pipeline itself will run on Python 3.9.6, snakemake 6.6.0 and R 4.1.0. For exact dependencies view `lgg-snakemake.yaml`.
 
 ### Using Conda/Mamba
 

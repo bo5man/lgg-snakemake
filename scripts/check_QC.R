@@ -57,7 +57,6 @@ sentrixs_full_cohort <- gsub(dir_full_cohort, '', sentrixs_full_cohort)
 sentrixs_full_cohort <- gsub('_Grn.idat', '', sentrixs_full_cohort)
 RGset_full_cohort <- RGset[,sentrixs_full_cohort]
 Mset_full_cohort <- Mset[,sentrixs_full_cohort]
-TypeSurvival <- paste(DFclinical_full_cohort[rownames(DFclinical_full_cohort) %in% sentrixs_full_cohort,'TypeSurvival'], 'survivor')
 
 # # # QC for Mset
 qcMset_full_cohort <- minfiQC(Mset_full_cohort, verbose=T)
@@ -95,7 +94,7 @@ message('Bad quality samples found: ', paste0(namesBad,' '))
 message('saving densityplot of Mset of full cohort samples in ', pdensityplotMset_full_cohort)
 png(file = pdensityplotMset_full_cohort, width = 1440, height = 1280) #width = 1846,height = 991
 par(mfrow=c(2,1))
-densityPlot(Mset_full_cohort, sampGroups=TypeSurvival)
+densityPlot(Mset_full_cohort, sampGroups=paste(DFclinical_full_cohort[colnames(Mset_full_cohort),'TypeSurvival'], 'survivor'))
 title('Densityplot of Mset of samples of the full cohort, categorized by survival')
 densityPlot(Mset_full_cohort, sampGroups=ifelse(1:ncol(Mset_full_cohort) %in% whichBad, 'bad','good'))
 title('Densityplot of Mset of samples of the full cohort, categorized by quality')
