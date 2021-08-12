@@ -160,7 +160,6 @@ DFclinical_gliomas <- readRDS(pDFclinical_gliomas)
 DFclinical_inhouse <- readRDS(pDFclinical_inhouse)
 
 
-
 # # # select probes gCIMP
 # cgs1 <- ('cg09732711', 'cg09326832', 'cg24665265', 'cg06220958', 'cg10245915', 'cg11689625', 'cg11799650')
 cgs1_ordered <- c('cg09732711', 'cg24665265', 'cg10245915', 'cg11799650', 'cg09326832', 'cg06220958', 'cg11689625')
@@ -200,7 +199,7 @@ for (i in seq_along(cutoffs)){
 
 # # # functions for heatmaps
 # betas_probes7_cohort = readRDS('./../results/analysis_probes/gCIMP_7probes/betas_gCIMP.RDS')
-# DFclinical_cohort = readRDS('./../results/DFclinical_cohort.RDS')
+# DFclinical_cohort = readRDS('./../../output-lgg/results/DFclinical_cohort.RDS')
 # betas_probes7_cohort = betas_probes7_cohort[setdiff(rownames(betas_probes7_cohort),'205061430022_R06C01'),]
 fdist <- function(x) as.dist(1-cor(t(x)))
 fclus <- function(x) hclust(x,method= "ward.D2")

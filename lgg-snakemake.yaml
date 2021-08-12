@@ -7,22 +7,25 @@ dependencies:
     - python=3.9.6
     - snakemake=6.6.0
     - pandoc=2.14.0.3
-      #- r-base #=4.0.5
-    - bioconductor-minfi=1.38.0
-    - bioconductor-limma=3.48.0
-    - bioconductor-conumee=1.26.0
-    - bioconductor-illuminahumanmethylationepicanno.ilm10b4.hg19=0.6.0
+    - libgfortran
+    - r-base=4.0.5
+    - bioconductor-qdnaseq
+    - bioconductor-minfi #=1.38.0
+    - bioconductor-limma #=3.48.0
+    - bioconductor-conumee #=1.26.0
+    - bioconductor-illuminahumanmethylationepicanno.ilm10b4.hg19 #=0.6.0
+    - bioconductor-illuminahumanmethylationepicanno.ilm10b3.hg19 #=0.6.0
       #- bioconductor-illuminahumanmethylationepicmanifest
-    - r-devtools=2.4.2
-    - r-rtsne=0.15
-    - r-rspectra=0.16_0
-    - r-ggplot2=3.3.5
-    - r-stringr=1.4.0
-    - r-openxlsx=4.2.4
-    - r-rcolorbrewer=1.1_2
-    - r-gplots=3.1.1
-    - r-e1071=1.7_7
-    - r-randomforest=4.6_14
-    - r-randomforestSRC=2.12.0
-    - r-pROC=1.17.0.1
-    - r-glmnet=4.1.2
+    - r-devtools #=2.4.2
+    - r-rtsne #=0.15
+    - r-rspectra #=0.16_0
+    - r-ggplot2 #=3.3.5
+    - r-stringr #=1.4.0
+    - r-openxlsx #=4.2.4
+    - r-rcolorbrewer #=1.1_2
+    - r-gplots #=3.1.1
+    - r-e1071 #=1.7_7
+    - r-randomforest #=4.6_14
+    - r-randomforestSRC #=2.12.0
+    - r-pROC #=1.17.0.1
+    - r-glmnet #=4.1.2

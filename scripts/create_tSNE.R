@@ -264,7 +264,14 @@ ggplot(sDF_inhouse, aes(x=X1, y=X2, col=TypeSurvival)) +
     ggtitle(paste0("tSNE with perplexity ", perp, ",based on the pca of all probes of the cohort and all inhouse samples"))
 dev.off()
 
+# # # Multidimensional scaling plot
 
 
+par(mfrow= c(1,2))
+m = mdsPlot(betas_gliomas, sampNames = sDF_gliomas[colnames(RGset_gliomas),'TypeSurvival'], numPositions=32000)
+l = mdsPlot(betas_gliomas, sampNames = sDF_gliomas[colnames(RGset_gliomas),'LSS'], numPositions=32000)
 
 
+par(mfrow= c(1,2))
+m = mdsPlot(RGset_cohort, sampNames = DFclinical_cohort[colnames(RGset_cohort),'TypeSurvival'], numPositions=32000)
+l = mdsPlot(RGset_cohort, sampNames = DFclinical_cohort[colnames(RGset_cohort),'LSS'], numPositions=32000)

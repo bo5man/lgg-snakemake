@@ -6,36 +6,39 @@ if (msg){
     suppressMessages(library(minfi))
     suppressMessages(library(conumee))
     suppressMessages(library(IlluminaHumanMethylationEPICanno.ilm10b4.hg19))
+    suppressMessages(library(IlluminaHumanMethylationEPICanno.ilm10b3.hg19))
     suppressMessages(library(RSpectra))
 } else{
     library(minfi)
     library(conumee)
     library(IlluminaHumanMethylationEPICanno.ilm10b4.hg19)
+    library(IlluminaHumanMethylationEPICanno.ilm10b3.hg19)
     library(RSpectra)
 }
 
 
 ##################
 # input file paths
+sentrix <- '205061430055_R04C01_Grn.idat' # E17-022910:LSS22 Female
+pMset_raw <- './../../output-lgg/results/Mset/Mset_raw.RDS'
 sentrix <- snakemake@input[["sentrix"]]
 pMset_raw <- snakemake@input[["Mset_raw"]]
 pDFclinical_cohort <-       snakemake@input[["DFclinical_cohort"]]
 pDFclinical_full_cohort <-  snakemake@input[["DFclinical_full_cohort"]]
 pDFclinical_gliomas <-      snakemake@input[["DFclinical_gliomas"]]
 pDFclinical_inhouse <-      snakemake@input[["DFclinical_inhouse"]]
-# sentrix <- '205061430131_R02C01_Grn.idat'
-# pMset_raw <- './../results/Mset/Mset_raw.RDS'
 
 # output file paths
+# pcnv <- './../results/cnv/RDS/205061430170_R06C01_cnv.RDS'
+# pcnvplot <- './../results/cnv/205061430170_R06C01_cnv.png'
 pcnv <- snakemake@output[["cnv"]]
 pcnvplot <- snakemake@output[["cnvplot"]]
-# pcnv <- './../results/cnv/RDS/205061430088_R07C01_cnv.RDS'
-# pcnvplot <- './../results/cnv/205061430088_R07C01_cnv.png'
 
 # parmeters
+dir_mnp <- './../../LGG_Methylation/mnp_training/'
+# dir_full_cohort <- './../../LGG_Methylation/data/utrecht_methy/'
 dir_full_cohort <- snakemake@params[['dir_full_cohort']]
 dir_mnp <- snakemake@params[['dir_mnp']]
-# dir_mnp <- './../../LGG_Methylation/mnp_training/'
 
 dir_cnv <- snakemake@params[["dir_cnv"]]
 dir_cnv_rds <- snakemake@params[["dir_cnv_rds"]]
@@ -63,12 +66,14 @@ DFclinical_inhouse <- readRDS(pDFclinical_inhouse)
 DFclinical_cohort <- readRDS(pDFclinical_cohort)
 DFclinical_full_cohort <- readRDS(pDFclinical_full_cohort)
 # DFclinical_inhouse = readRDS('./../results/DFclinical_inhouse.RDS')
-# DFclinical_cohort = readRDS('./../results/DFclinical_cohort.RDS')
+# DFclinical_cohort = readRDS('./../../output-lgg/results/DFclinical_cohort.RDS')
+# DFclinical_full_cohort = readRDS('./../../output-lgg/results/DFclinical_full_cohort.RDS')
 
 # read raw Mset: no normalization is performed before CNV analysis 
 Mset_raw <- readRDS(pMset_raw)
 
 # select current sentrix from Mset
+# sentrixs = list.files(dir_full_cohort,pattern='_Grn.idat')
 sentrix <- gsub(dir_full_cohort, '', sentrix)
 sentrix <- gsub('_Grn.idat', '', sentrix)
 sMset <- Mset_raw[,sentrix]
@@ -93,12 +98,36 @@ if (Sex == 'F'){
 }
 x <- CNV.fit(cndata, ref.data, anno)
 x <- CNV.bin(x)
-# x <- CNV.detail(x)
-x <- CNV.segment(x)
+x <- CNV.segment(x,alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3)
+# Settings CNV
+# x1 <- CNV.segment(y, alpha = 0.005, nperm = 50000, min.width = 5, undo.splits = "sdundo", undo.SD = 2.2, verbose = 1)
+# # Settings DNAcopy
+# x2 <- CNV.segment(y, alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3, verbose = 1)
 cnv <- x
 
 message('saving cnv in ', pcnv)
 saveRDS(cnv, file = pcnv)
+
+
+# sentrix <- sentrix
+# sMset <- Mset_raw[,sentrix]
+# cnsentrix <- CNV.load(sMset)
+# mappedsMset <- mapToGenome(sMset)
+# anno <- CNV.create_anno(array_type="EPIC")
+# anno@probes <- subsetByOverlaps(anno@probes, granges(mappedsMset))
+# p <- names(anno@probes)
+# sMset <- sMset[p,1]
+# cnsentrix <- CNV.load(sMset)
+# # inside CNV.fit: https://rdrr.io/bioc/conumee/src/R/process.R
+# # r <- cor(query@intensity[p, ], ref@intensity[p, ])[1, ] < 0.99
+# # r <- cor(cnsentrix@intensity[p, ], cnref@intensity[p, ])[1, ] < 0.99 cor matrix is 1x1, so need more refs samples?
+# 
+# ref <- '205061430174_R03C01' # 13752_4:LSS24
+# refMset <- Mset_raw[p,ref]
+# cnref <- CNV.load(refMset)
+# # refMset <- mapToGenome(refMset)
+# 
+# x <- CNV.fit(cnsentrix, cnref, anno)
 
 Sentrix_ID <- sentrix
 # FullSample <- DFclinical_full_cohort$FullSample[DFclinical_full_cohort$Sentrix_ID == sentrix]
@@ -120,3 +149,13 @@ CNV.genomeplot(cnv, chrY=FALSE, chrX=FALSE, ylim=c(-1.5,1.5),
                )
 )
 dev.off()
+
+
+# make QDNAseq usable
+# q  = readRDS('./../../output-CGH/100kbp/data/100kbp-segmented.rds')
+# names(attributes(q))
+# attributes(q)
+# pData(attributes(q)$phenoData)
+# attributes(q)$annotation
+# attributes(q)
+
