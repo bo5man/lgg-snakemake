@@ -131,3 +131,6 @@ message('saving clinical dataframe for inhouse and full cohort in ', pDFclinical
 saveRDS(sDF_full_inhouse, file = pDFclinical_full_inhouse)
 
 
+
+sink()
+sink()

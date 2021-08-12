@@ -50,3 +50,6 @@ df <- df[,c("Sentrix_ID", "FullSample", "SufficientDNA", "SufficientPValues_1", 
 
 message('saving df of targets for clinical data in targets_df')
 saveRDS(df, file = ptargets_df)
+
+sink()
+sink()

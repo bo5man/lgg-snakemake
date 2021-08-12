@@ -148,7 +148,8 @@ source(file.path(dir_mnp,"R","RSpectra_pca.R"))
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # # # Read input
@@ -492,3 +493,6 @@ print(p3)
 dev.off()
 message('saving heatmap RDS for long survivors of cohort and hypermodulator probes in ', pheatmapRDS_hypermodulator_cohort_long)
 saveRDS(p3, file = pheatmapRDS_hypermodulator_cohort_long)
+
+sink()
+sink()

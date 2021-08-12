@@ -36,13 +36,14 @@ if(!dir.exists(dir_mset))(dir.create(dir_mset))
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # read input
 RGset <- readRDS(pRGset)
 
-# Illumina normalization
+# MNP Illumina normalization
 message("running Illumina normalization ...",Sys.time())
 Mset <- MNPpreprocessIllumina(RGset)
 
@@ -87,3 +88,6 @@ Mset_mnp_filtered <- Mset[-remove,]
 message('saving Mset_mnp_filtered in ', pMset_mnp_filtered)
 saveRDS(Mset_mnp_filtered, file = pMset_mnp_filtered)
 
+
+sink()
+sink()

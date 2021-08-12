@@ -29,7 +29,8 @@ dir_mnp <- snakemake@params[['dir_mnp']]
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # read Sentrix files into Red-Green channel
@@ -38,3 +39,6 @@ RGset <- read.metharray(sentrix, force=TRUE, verbose=TRUE)
 
 message('saving RGset in ', pRGset)
 saveRDS(RGset, file = pRGset)
+
+sink()
+sink()

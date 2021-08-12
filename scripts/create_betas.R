@@ -42,7 +42,8 @@ if(!dir.exists(dir_betas))(dir.create(dir_betas))
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # read input
@@ -69,3 +70,6 @@ saveRDS(betas_mnp_filtered, file = pbetas_mnp_filtered)
 # message('saving betas_mnp_filtered_sd in ', pbetas_mnp_filtered_sd)
 # saveRDS(betas_mnp_filtered_sd, file = pbetas_mnp_filtered_sd)
 # 
+
+sink()
+sink()

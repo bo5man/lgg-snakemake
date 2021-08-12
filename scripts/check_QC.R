@@ -41,7 +41,8 @@ if(!dir.exists(dir_qc))(dir.create(dir_qc))
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # # # read input
@@ -144,3 +145,6 @@ betas_inhouse <- betas[i,]
 
 message('saving betas for good samples of cohort and inhouse in ', pBetas_inhouse)
 saveRDS(betas_inhouse, file = pBetas_inhouse)
+
+sink()
+sink()

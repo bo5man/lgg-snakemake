@@ -73,7 +73,8 @@ if(!dir.exists(dir_glass_hypermodulator_probes))(dir.create(dir_glass_hypermodul
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 
@@ -208,3 +209,6 @@ saveRDS(glm_stats_gCIMP, file = pglm_stats_gCIMP)
 # message('saving the trained generalized linear model, test probabilities and roc for thresholded gCIMP features in ', pglm_stats_gCIMP_thresholded)
 # glm_stats_gCIMP_thresholded = list('model_train' = model_train, 'prob_test' = prob_test, 'myroc' = myroc)
 # saveRDS(glm_stats_gCIMP_thresholded, file = pglm_stats_gCIMP_thresholded)
+
+sink()
+sink()

@@ -69,7 +69,8 @@ if(!dir.exists(dir_glass_hypermodulator_probes))(dir.create(dir_glass_hypermodul
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 
@@ -141,3 +142,6 @@ saveRDS(DF_cohort, file = pDFfeatures_glass_treatment_related_620probes)
 # Forest$importance #feature importances
 
 
+
+sink()
+sink()

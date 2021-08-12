@@ -6,13 +6,11 @@ if (msg){
     suppressMessages(library(minfi))
     suppressMessages(library(conumee))
     suppressMessages(library(IlluminaHumanMethylationEPICanno.ilm10b4.hg19))
-    suppressMessages(library(IlluminaHumanMethylationEPICanno.ilm10b3.hg19))
     suppressMessages(library(RSpectra))
 } else{
     library(minfi)
     library(conumee)
     library(IlluminaHumanMethylationEPICanno.ilm10b4.hg19)
-    library(IlluminaHumanMethylationEPICanno.ilm10b3.hg19)
     library(RSpectra)
 }
 
@@ -23,10 +21,7 @@ sentrix <- '205061430055_R04C01_Grn.idat' # E17-022910:LSS22 Female
 pMset_raw <- './../../output-lgg/results/Mset/Mset_raw.RDS'
 sentrix <- snakemake@input[["sentrix"]]
 pMset_raw <- snakemake@input[["Mset_raw"]]
-pDFclinical_cohort <-       snakemake@input[["DFclinical_cohort"]]
 pDFclinical_full_cohort <-  snakemake@input[["DFclinical_full_cohort"]]
-pDFclinical_gliomas <-      snakemake@input[["DFclinical_gliomas"]]
-pDFclinical_inhouse <-      snakemake@input[["DFclinical_inhouse"]]
 
 # output file paths
 # pcnv <- './../results/cnv/RDS/205061430170_R06C01_cnv.RDS'
@@ -51,7 +46,8 @@ source(file.path(dir_mnp,"R","RSpectra_pca.R"))
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # load conumee annotation object
@@ -62,11 +58,7 @@ load(file.path(dir_mnp,"CNV_data","CNanalysis4_conumee_REF-M.vh20150715.RData"))
 load(file.path(dir_mnp,"CNV_data","CNanalysis4_conumee_REF-F.vh20150715.RData"))
 
 # read clinical data files
-DFclinical_inhouse <- readRDS(pDFclinical_inhouse)
-DFclinical_cohort <- readRDS(pDFclinical_cohort)
 DFclinical_full_cohort <- readRDS(pDFclinical_full_cohort)
-# DFclinical_inhouse = readRDS('./../results/DFclinical_inhouse.RDS')
-# DFclinical_cohort = readRDS('./../../output-lgg/results/DFclinical_cohort.RDS')
 # DFclinical_full_cohort = readRDS('./../../output-lgg/results/DFclinical_full_cohort.RDS')
 
 # read raw Mset: no normalization is performed before CNV analysis 
@@ -87,7 +79,6 @@ cndata <- CNV.load(sMset)
 
 # get sex of sample patient
 Sex <- DFclinical_full_cohort$SexType[DFclinical_full_cohort$Sentrix_ID == sentrix]
-# Sex <- DFclinical_cohort$SexType[DFclinical_cohort$Sentrix_ID == sentrix]
 
 if (Sex == 'F'){
     ref.data = refF.data
@@ -159,3 +150,6 @@ dev.off()
 # attributes(q)$annotation
 # attributes(q)
 
+
+sink()
+sink()

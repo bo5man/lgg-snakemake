@@ -44,7 +44,8 @@ if(!dir.exists(dir_mset_singles))(dir.create(dir_mset_singles))
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # read input
@@ -82,3 +83,6 @@ saveRDS(singleMset_raw, file = psingleMset_raw)
 singleMset_noob <- Mset_noob[,sentrix]
 message('saving singleMset_noob in ', psingleMset_noob)
 saveRDS(singleMset_noob, file = psingleMset_noob)
+
+sink()
+sink()

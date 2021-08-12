@@ -83,7 +83,8 @@ source(file.path(dir_mnp,"R","RSpectra_pca.R"))
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # read input
@@ -275,3 +276,6 @@ l = mdsPlot(betas_gliomas, sampNames = sDF_gliomas[colnames(RGset_gliomas),'LSS'
 par(mfrow= c(1,2))
 m = mdsPlot(RGset_cohort, sampNames = DFclinical_cohort[colnames(RGset_cohort),'TypeSurvival'], numPositions=32000)
 l = mdsPlot(RGset_cohort, sampNames = DFclinical_cohort[colnames(RGset_cohort),'LSS'], numPositions=32000)
+
+sink()
+sink()
