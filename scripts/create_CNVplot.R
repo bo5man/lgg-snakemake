@@ -89,13 +89,24 @@ if (Sex == 'F'){
 }
 x <- CNV.fit(cndata, ref.data, anno)
 x <- CNV.bin(x)
-x <- CNV.segment(x,alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3)
-# Settings CNV
+# x <- CNV.segment(x,alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3)
+
+# findMethods('CNV.fit')
+# findMethods('CNV.segment')
+# Settings Conumee
 # x1 <- CNV.segment(y, alpha = 0.005, nperm = 50000, min.width = 5, undo.splits = "sdundo", undo.SD = 2.2, verbose = 1)
 # # Settings DNAcopy
 # x2 <- CNV.segment(y, alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3, verbose = 1)
+# settings QDNAseq
+# if (bin==100) {SDundo=0.10; alph=1e-20} # default = 1e-20 # 0.01 used for PELLL_FS8_a0.01
+# QCN.fcnsds <- segmentBins(QCN.fcnsd[,QCN.fcnsd$used.reads > min_used_reads ], undo.splits='sdundo', undo.SD=SDundo, alpha=alph, transformFun="sqrt") # gives 'Performing segmentation: NA
+# thus
+# x <- CNV.segment(x, alpha = 1e-20, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 0.10, verbose = 1, transformFun='sqrt')
+x <- CNV.segment(x, alpha = 1e-20, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 0.10, verbose = 1)
 cnv <- x
 
+#plot(cnv@bin$ratio-cnv@bin$shift)
+# findMethods('CNV.bin')
 message('saving cnv in ', pcnv)
 saveRDS(cnv, file = pcnv)
 

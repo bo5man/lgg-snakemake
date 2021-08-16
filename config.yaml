@@ -1,6 +1,6 @@
 paths:
     all_idats: '../LGG_Methylation/data/allsamples/' # directory to all methylation idat-files, correspondents to data/allsamples/ in README, string
-    full_cohort: '../LGG_Methylation/data/utrecht_methy/' # path to directory of methylation idat-files of full cohort, correspondents to data/fullcohort/ in README, used to identify all samples in the full cohort, also used to create only CNV-plots of full cohort samples, string
+    full_cohort: '/net/nfs/PAT/archive/MPS-402/methylation/' # path to directory of methylation idat-files of full cohort, correspondents to data/fullcohort/ in README, used to identify all samples in the full cohort, also used to create only CNV-plots of full cohort samples, string
     out: '../output-lgg/results/' # directory of all output directory and files, string
     log: '../output-lgg/log/' # directory of the log files, string
     mnp: '../LGG_Methylation/mnp_training/' # directory of the cloned Github Repository of Heidelberg, string
