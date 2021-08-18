@@ -11,6 +11,7 @@ if (msg){
     suppressMessages(library(RSpectra))
     suppressMessages(library(Rtsne))
     suppressMessages(library(ggplot2))
+    suppressMessages(library(ggfortify))
 } else{
     library(openxlsx)
     library(dplyr)
@@ -20,6 +21,7 @@ if (msg){
     library(RSpectra)
     library(Rtsne)
     library(ggplot2)
+    library(ggfortify)
 }
 
 ##################
@@ -40,13 +42,13 @@ ptsne_gliomas <- snakemake@output[["tsne_gliomas"]]
 ptsne_inhouse <- snakemake@output[["tsne_inhouse"]]
 ptsneplot_cohort_Type <- snakemake@output[["tsneplot_cohort_Type"]]
 ptsneplot_cohort_TypeSurvival <- snakemake@output[["tsneplot_cohort_TypeSurvival"]]
-ptsneplot_cohort_LSS <- snakemake@output[["tsneplot_cohort_LSS"]]
+ptsneplot_cohort_ID <- snakemake@output[["tsneplot_cohort_ID"]]
 ptsneplot_gliomas_Type <- snakemake@output[["tsneplot_gliomas_Type"]]
 ptsneplot_gliomas_TypeSurvival <- snakemake@output[["tsneplot_gliomas_TypeSurvival"]]
-ptsneplot_gliomas_LSS <- snakemake@output[["tsneplot_gliomas_LSS"]]
+ptsneplot_gliomas_ID <- snakemake@output[["tsneplot_gliomas_ID"]]
 ptsneplot_inhouse_Type <-           snakemake@output[["tsneplot_inhouse_Type"]]
 ptsneplot_inhouse_TypeSurvival <-   snakemake@output[["tsneplot_inhouse_TypeSurvival"]]
-ptsneplot_inhouse_LSS <-            snakemake@output[["tsneplot_inhouse_LSS"]]
+ptsneplot_inhouse_ID <-            snakemake@output[["tsneplot_inhouse_ID"]]
 # pBetas_gliomas <- './../results/betas_gliomas.RDS'
 # pDFclinical_gliomas <-      './../results/DFclinical_gliomas.RDS'
 # ppca_gliomas <- './../results/tSNE/pca/pca_gliomas.RDS'
@@ -70,10 +72,10 @@ if(!dir.exists(dir_tsne))(dir.create(dir_tsne))
 if(!dir.exists(dir_rds))(dir.create(dir_rds))
 # if(!dir.exists(dir_mset))(dir.create(dir_mset))
 
-pinhouse <- snakemake@params[['inhouse']]
-pcohort <- snakemake@params[['overview']]
-# pinhouse <- './../../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx'
-# pcohort <- './../../LGG_Methylation/Overview_oligodendroglioma_samples_long_vs_short_PFS_2021-06-10.xlsx'
+# pinhouse <- snakemake@params[['inhouse']]
+# pcohort <- snakemake@params[['overview']]
+# # pinhouse <- './../../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx'
+# # pcohort <- './../../LGG_Methylation/Overview_oligodendroglioma_samples_long_vs_short_PFS_2021-06-10.xlsx'
 
 dir_mnp <- snakemake@params[['dir_mnp']]
 # dir_mnp <- "./../../LGG_Methylation/mnp_training/"
@@ -101,11 +103,22 @@ set.seed(0)
 
 # # calculate pcas for cohort
 kpca <- min(nrow(betas_cohort),ncol(betas_cohort))
+all(rownames(betas_cohort) == rownames(sDF_cohort))
+rownames(sDF_cohort) <- sDF_cohort$ID 
+rownames(betas_cohort) <- sDF_cohort$ID 
 pca_cohort <- prcomp_svds(betas_cohort,k=kpca-1)
 
 message('saving pca for cohort in ', ppca_cohort)
 saveRDS(pca_cohort, file = ppca_cohort)
 
+
+# # # show principle components
+# 
+# message('saving pca of cohort in ', ppcaplot_cohort_TypeSurvival)
+# png(file = ppcaplot_cohort_TypeSurvival, width = 1440, height = 1280) #width = 1846,height = 991
+# p1 <- autoplot(pca_cohort, label = TRUE, data = sDF_cohort , colour = 'TypeSurvival') +
+#     labs(title = 'Principal Component Analysis of 850k probes for 19 cohort samples of 1p/19q oligodendroglioma')
+# dev.off()
 
 # # calculate tSNE for cohort
 
@@ -141,11 +154,11 @@ ggplot(sDF_cohort, aes(x=X1, y=X2, col=Type)) +
     ggtitle(paste0("perplexity ", perp, ", cohort"))
 dev.off()
 
-message('saving tsneplot_cohort_LSS in ', ptsneplot_cohort_LSS)
-png(file = ptsneplot_cohort_LSS, width = 1440, height = 1280) #width = 1846,height = 991
+message('saving tsneplot_cohort_ID in ', ptsneplot_cohort_ID)
+png(file = ptsneplot_cohort_ID, width = 1440, height = 1280) #width = 1846,height = 991
 ggplot(sDF_cohort, aes(x=X1, y=X2, col=TypeSurvival)) +
     geom_point()  +
-    geom_text(data = sDF_cohort,aes(x=X1,y=X2,label=LSS)) +
+    geom_text(data = sDF_cohort,aes(x=X1,y=X2,label=ID)) +
     theme_bw() + 
     theme(legend.position = "right") +
     guides(col=guide_legend(ncol=1)) +
@@ -154,14 +167,23 @@ dev.off()
 
 
 
-
 # # calculate pcas for gliomas
 kpca <- min(nrow(betas_gliomas),ncol(betas_gliomas))
+
+# all(rownames(betas_cohort) == rownames(sDF_cohort))
+# rownames(sDF_gliomas) <- sDF_gliomas$ID
 pca_gliomas <- prcomp_svds(betas_gliomas,k=kpca-1)
 
 message('saving pca for gliomas in ', ppca_gliomas)
 saveRDS(pca_gliomas, file = ppca_gliomas)
 
+# # # show principle components
+# 
+# message('saving pca of gliomas in ', ppcaplot_gliomas_TypeSurvival)
+# png(file = ppcaplot_gliomas_TypeSurvival, width = 1440, height = 1280) #width = 1846,height = 991
+# p2 <- autoplot(pca_gliomas, label = TRUE, data = sDF_gliomas , colour = 'TypeSurvival') +
+#     labs(title = 'Principal Component Analysis of 850k probes for 19 cohort samples of 1p/19q oligodendroglioma/n and related glioma inhouse samples')
+# dev.off()
 
 # # calculate tSNE for gliomas
 
@@ -197,11 +219,11 @@ ggplot(sDF_gliomas, aes(x=X1, y=X2, col=TypeSurvival)) +
     ggtitle(paste0("perplexity ", perp, ", cohort and selected Gliomas"))
 dev.off()
 
-message('saving tsneplot_gliomas_LSS in ', ptsneplot_gliomas_LSS)
-png(file = ptsneplot_gliomas_LSS, width = 1440, height = 1280) #width = 1846,height = 991
+message('saving tsneplot_gliomas_ID in ', ptsneplot_gliomas_ID)
+png(file = ptsneplot_gliomas_ID, width = 1440, height = 1280) #width = 1846,height = 991
 ggplot(sDF_gliomas, aes(x=X1, y=X2, col=TypeSurvival)) +
     geom_point()  +
-    geom_text(data = sDF_gliomas,aes(x=X1,y=X2,label=LSS)) +
+    geom_text(data = sDF_gliomas,aes(x=X1,y=X2,label=ID)) +
     theme_bw() + 
     theme(legend.position = "right") +
     guides(col=guide_legend(ncol=1)) +
@@ -236,12 +258,24 @@ png(file = ptsneplot_inhouse_Type, width = 1440, height = 1280) #width = 1846,he
 ggplot(sDF_inhouse, aes(x=X1, y=X2, col=Type)) +
     geom_point()  +
     # geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=Type)) +
-    geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=Type)) +
+    geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=Type, col=Type)) +
     theme_bw() + 
     theme(legend.position = "right") +
     guides(col=guide_legend(ncol=1)) +
     ggtitle(paste0("tSNE with perplexity ", perp, ",based on the pca of all probes of the cohort and all inhouse samples"))
 dev.off()
+
+
+# ggplot(sDF_inhouse[sDF_inhouse$Cohort_ID != 'FullCohort',], aes(x=X1, y=X2, col=Type)) +
+#     geom_point()  +
+#     # geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=Type)) +
+#     geom_text(data = sDF_inhouse[sDF_inhouse$Cohort_ID != 'FullCohort',],aes(x=X1,y=X2,label=Type, col=Type)) +
+#     theme_bw() + 
+#     theme(legend.position = "right") +
+#     guides(col=guide_legend(ncol=1)) +
+#     ggtitle(paste0("tSNE with perplexity ", perp, ",based on the pca of all probes of the cohort and all inhouse samples"))
+
+
 
 message('saving tsneplot_inhouse_TypeSurvival in ', ptsneplot_inhouse_TypeSurvival)
 png(file = ptsneplot_inhouse_TypeSurvival, width = 1440, height = 1280) #width = 1846,height = 991
@@ -254,28 +288,27 @@ ggplot(sDF_inhouse, aes(x=X1, y=X2, col=TypeSurvival)) +
     ggtitle(paste0("tSNE with perplexity ", perp, ",based on the pca of all probes of the cohort and all inhouse samples"))
 dev.off()
 
-message('saving tsneplot_inhouse_LSS in ', ptsneplot_inhouse_LSS)
-png(file = ptsneplot_inhouse_LSS, width = 1440, height = 1280) #width = 1846,height = 991
+message('saving tsneplot_inhouse_ID in ', ptsneplot_inhouse_ID)
+png(file = ptsneplot_inhouse_ID, width = 1440, height = 1280) #width = 1846,height = 991
 ggplot(sDF_inhouse, aes(x=X1, y=X2, col=TypeSurvival)) +
     geom_point()  +
-    geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=LSS)) +
+    geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=ID)) +
     theme_bw() + 
     theme(legend.position = "right") +
     guides(col=guide_legend(ncol=1)) +
     ggtitle(paste0("tSNE with perplexity ", perp, ",based on the pca of all probes of the cohort and all inhouse samples"))
 dev.off()
 
-# # # Multidimensional scaling plot
+# # # # Multidimensional scaling plot
+# 
+# 
+# par(mfrow= c(1,2))
+# m = mdsPlot(betas_gliomas, sampNames = sDF_gliomas[colnames(RGset_gliomas),'TypeSurvival'], numPositions=32000)
+# l = mdsPlot(betas_gliomas, sampNames = sDF_gliomas[colnames(RGset_gliomas),'ID'], numPositions=32000)
+# 
+# 
+# par(mfrow= c(1,2))
+# m = mdsPlot(RGset_cohort, sampNames = DFclinical_cohort[colnames(RGset_cohort),'TypeSurvival'], numPositions=32000)
+# l = mdsPlot(RGset_cohort, sampNames = DFclinical_cohort[colnames(RGset_cohort),'ID'], numPositions=32000)
 
-
-par(mfrow= c(1,2))
-m = mdsPlot(betas_gliomas, sampNames = sDF_gliomas[colnames(RGset_gliomas),'TypeSurvival'], numPositions=32000)
-l = mdsPlot(betas_gliomas, sampNames = sDF_gliomas[colnames(RGset_gliomas),'LSS'], numPositions=32000)
-
-
-par(mfrow= c(1,2))
-m = mdsPlot(RGset_cohort, sampNames = DFclinical_cohort[colnames(RGset_cohort),'TypeSurvival'], numPositions=32000)
-l = mdsPlot(RGset_cohort, sampNames = DFclinical_cohort[colnames(RGset_cohort),'LSS'], numPositions=32000)
-
-sink()
 sink()

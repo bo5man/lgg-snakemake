@@ -1,6 +1,7 @@
 <p align="center">
-  <img width="100%" height="100%" src="https://github.com/tgac-vumc/lgg-snakemake/blob/master/DAG_all.svg">
+  <img width="100%" height="100%" src="https://github.com/bo5man/lgg-snakemake/blob/master/DAG_all.svg">
 </p>
+
 ## Installation
 
 For the installation of this pipeline any Python install compatable Conda is required.

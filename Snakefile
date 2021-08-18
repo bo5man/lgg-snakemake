@@ -93,13 +93,13 @@ rule all: #uncomment which branch you want for testing
         tsne_inhouse =              DIR_RDS + 'tsne_inhouse.RDS',       # create_tSNE
         tsneplot_cohort_Type =             DIR_TSNE + 'tsneplot_cohort_Type.png',         # create_tSNE
         tsneplot_cohort_TypeSurvival =     DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', # create_tSNE
-        tsneplot_cohort_LSS =              DIR_TSNE + 'tsneplot_cohort_LSS.png',          # create_tSNE
+        tsneplot_cohort_ID =              DIR_TSNE + 'tsneplot_cohort_ID.png',          # create_tSNE
         tsneplot_gliomas_Type =                 DIR_TSNE + 'tsneplot_gliomas_Type.png',             # create_tSNE
         tsneplot_gliomas_TypeSurvival =         DIR_TSNE + 'tsneplot_gliomas_TypeSurvival.png',     # create_tSNE
-        tsneplot_gliomas_LSS =                  DIR_TSNE + 'tsneplot_gliomas_LSS.png',              # create_tSNE
+        tsneplot_gliomas_ID =                  DIR_TSNE + 'tsneplot_gliomas_ID.png',              # create_tSNE
         tsneplot_inhouse_Type =                 DIR_TSNE + 'tsneplot_inhouse_Type.png',             # create_tSNE
         tsneplot_inhouse_TypeSurvival =         DIR_TSNE + 'tsneplot_inhouse_TypeSurvival.png',     # create_tSNE
-        tsneplot_inhouse_LSS =                  DIR_TSNE + 'tsneplot_inhouse_LSS.png',              # create_tSNE
+        tsneplot_inhouse_ID =                  DIR_TSNE + 'tsneplot_inhouse_ID.png',              # create_tSNE
         ####### CNV branch #####
         cnv = expand(DIR_CNV_RDS + '{sentrix_cohort}_cnv.RDS', sentrix_cohort = SENTRIXS_COHORT.keys()),                            # create_CNVplot
         cnvplot = expand(DIR_CNV + '{sentrix_cohort}_cnv.png', sentrix_cohort = SENTRIXS_COHORT.keys()),                            # create_CNVplot
@@ -286,13 +286,13 @@ rule create_tSNE:
         tsne_inhouse =              DIR_RDS + 'tsne_inhouse.RDS',       # create_tSNE
         tsneplot_cohort_Type =             DIR_TSNE + 'tsneplot_cohort_Type.png',         # create_tSNE
         tsneplot_cohort_TypeSurvival =     DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', # create_tSNE
-        tsneplot_cohort_LSS =              DIR_TSNE + 'tsneplot_cohort_LSS.png',          # create_tSNE
+        tsneplot_cohort_ID =              DIR_TSNE + 'tsneplot_cohort_ID.png',          # create_tSNE
         tsneplot_gliomas_Type =                 DIR_TSNE + 'tsneplot_gliomas_Type.png',             # create_tSNE
         tsneplot_gliomas_TypeSurvival =         DIR_TSNE + 'tsneplot_gliomas_TypeSurvival.png',     # create_tSNE
-        tsneplot_gliomas_LSS =                  DIR_TSNE + 'tsneplot_gliomas_LSS.png',              # create_tSNE
+        tsneplot_gliomas_ID =                  DIR_TSNE + 'tsneplot_gliomas_ID.png',              # create_tSNE
         tsneplot_inhouse_Type =                 DIR_TSNE + 'tsneplot_inhouse_Type.png',             # create_tSNE
         tsneplot_inhouse_TypeSurvival =         DIR_TSNE + 'tsneplot_inhouse_TypeSurvival.png',     # create_tSNE
-        tsneplot_inhouse_LSS =                  DIR_TSNE + 'tsneplot_inhouse_LSS.png',              # create_tSNE
+        tsneplot_inhouse_ID =                  DIR_TSNE + 'tsneplot_inhouse_ID.png',              # create_tSNE
     params:
         DFclinical_cohort =    DIR_OUT + 'DFclinical_cohort.RDS',# create_clinicalDF
         DFclinical_gliomas =        DIR_OUT + 'DFclinical_gliomas.RDS',    # create_clinicalDF

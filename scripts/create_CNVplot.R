@@ -133,7 +133,7 @@ saveRDS(cnv, file = pcnv)
 
 Sentrix_ID <- sentrix
 # FullSample <- DFclinical_full_cohort$FullSample[DFclinical_full_cohort$Sentrix_ID == sentrix]
-LSS <- DFclinical_full_cohort$LSS[DFclinical_full_cohort$Sentrix_ID == sentrix]
+LSS <- DFclinical_full_cohort$ID[DFclinical_full_cohort$Sentrix_ID == sentrix]
 TypeSurvival <- DFclinical_full_cohort$TypeSurvival[DFclinical_full_cohort$Sentrix_ID == sentrix]
 
 # # from QDNAseq

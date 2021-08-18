@@ -114,7 +114,7 @@ deskew <- function(myfeatures, threshold) {
 longshort <- readRDS(pDFclinical_cohort)
 betas <- readRDS(pBetas_gCIMP)
 betas <- betas[rownames(longshort),]
-longshort = readRDS('./../results/DFclinical_cohort.RDS')
+# longshort = readRDS('./../results/DFclinical_cohort.RDS')
 # betas = readRDS('./../results/analysis_probes/gCIMP_7probes/betas_gCIMP.RDS')
 # betas_thresholded <- readRDS(pBetas_gCIMP_thresholded)
 # betas_thresholded <- betas_thresholded[rownames(longshort),]

@@ -221,11 +221,11 @@ p1 = heatmap.2(as.matrix(betas_probes7_cohort[,cgs1_ordered]),
           col = rev(brewer.pal(n=11,'RdYlBu')),
           hclustfun = fclus, distfun = fdist,
           RowSideColors = DFclinical_cohort$colAnn,
-          labRow = DFclinical_cohort[rownames(betas_probes7_cohort[,cgs1_ordered]),'LSS'],
+          labRow = DFclinical_cohort[rownames(betas_probes7_cohort[,cgs1_ordered]),'ID'],
           trace = 'none',
           Colv = FALSE,
           srtCol = 45,
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes7_cohort[,cgs1_ordered]),'LSS'],DFclinical_cohort[rownames(betas_probes7_cohort[,cgs1_ordered]),'TypeSurvival']),
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes7_cohort[,cgs1_ordered]),'ID'],DFclinical_cohort[rownames(betas_probes7_cohort[,cgs1_ordered]),'TypeSurvival']),
           main=paste('heatmap of 7 beta values of methylation probes\n for full cohort of',length(rownames(betas_probes7_cohort[,cgs1_ordered])),'samples of 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )
@@ -252,8 +252,8 @@ p2 = heatmap.2(as.matrix(betas_probes7_cohort_short[,cgs1_ordered]),
           trace = 'none',
           Colv = FALSE,
           srtCol = 45,
-          labRow = DFclinical_cohort[rownames(betas_probes7_cohort_short[,cgs1_ordered]),'LSS'],
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes7_cohort_short[,cgs1_ordered]),'LSS'],DFclinical_cohort[rownames(betas_probes7_cohort_short[,cgs1_ordered]),'TypeSurvival']),
+          labRow = DFclinical_cohort[rownames(betas_probes7_cohort_short[,cgs1_ordered]),'ID'],
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes7_cohort_short[,cgs1_ordered]),'ID'],DFclinical_cohort[rownames(betas_probes7_cohort_short[,cgs1_ordered]),'TypeSurvival']),
           main=paste('heatmap of beta values of 7 methylation probes\n for full cohort of',length(rownames(betas_probes7_cohort_short)),'samples of short survivors with 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )
@@ -270,8 +270,8 @@ p3 = heatmap.2(as.matrix(betas_probes7_cohort_long[,cgs1_ordered]),
           trace = 'none',
           Colv = FALSE,
           srtCol = 45,
-          labRow = DFclinical_cohort[rownames(betas_probes7_cohort_long[,cgs1_ordered]),'LSS'],
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes7_cohort_long[,cgs1_ordered]),'LSS'],DFclinical_cohort[rownames(betas_probes7_cohort_long[,cgs1_ordered]),'TypeSurvival']),
+          labRow = DFclinical_cohort[rownames(betas_probes7_cohort_long[,cgs1_ordered]),'ID'],
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes7_cohort_long[,cgs1_ordered]),'ID'],DFclinical_cohort[rownames(betas_probes7_cohort_long[,cgs1_ordered]),'TypeSurvival']),
           main=paste('heatmap of beta values of 7 methylation probes\n for full cohort of',length(rownames(betas_probes7_cohort_long)),'samples of long survivors with 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )
@@ -287,11 +287,11 @@ saveRDS(p3, file = pheatmapRDS_gCIMP_cohort_long)
 #           col = rev(brewer.pal(n=11,'RdYlBu')),
 #           hclustfun = fclus, distfun = fdist,
 #           RowSideColors = DFclinical_cohort$colAnn,
-#           labRow = DFclinical_cohort[rownames(betas_probes7_cohort_thresholded[,cgs1_ordered]),'LSS'],
+#           labRow = DFclinical_cohort[rownames(betas_probes7_cohort_thresholded[,cgs1_ordered]),'ID'],
 #           trace = 'none',
 #           Colv = FALSE,
 #           srtCol = 45,
-#           #           labRow = paste(DFclinical_cohort[rownames(betas_probes7_cohort_thresholded[,cgs1_ordered]),'LSS'],DFclinical_cohort[rownames(betas_probes7_cohort_thresholded[,cgs1_ordered]),'TypeSurvival']),
+#           #           labRow = paste(DFclinical_cohort[rownames(betas_probes7_cohort_thresholded[,cgs1_ordered]),'ID'],DFclinical_cohort[rownames(betas_probes7_cohort_thresholded[,cgs1_ordered]),'TypeSurvival']),
 #           main=paste('heatmap of 7 thresholded beta values of methylation probes\n for full cohort of',length(rownames(betas_probes7_cohort_thresholded[,cgs1_ordered])),'samples of 1p/19q oligodendroglioma'),
 #           margin=c(10,20)
 # )
@@ -334,18 +334,18 @@ saveRDS(betas_probes620_cohort_long, file = pBetas_glass_treatment_related_620pr
 
 # # make heatmap for betas
 # full
-# rownames(betas_probes620_cohort) <- paste(DFclinical_cohort[rownames(betas_probes620_cohort),'LSS'],DFclinical_cohort[rownames(betas_probes620_cohort),'TypeSurvival'], 'survivor')
+# rownames(betas_probes620_cohort) <- paste(DFclinical_cohort[rownames(betas_probes620_cohort),'ID'],DFclinical_cohort[rownames(betas_probes620_cohort),'TypeSurvival'], 'survivor')
 message('saving heatmap for full cohort and treatment related probes in ', pheatmap_treatment_related_cohort)
 png(file = pheatmap_treatment_related_cohort, width = 1000, height = 1000, pointsize = 14) #width = 1846,height = 991
 p1 = heatmap.2(as.matrix(betas_probes620_cohort),
           col = rev(brewer.pal(n=11,'RdYlBu')),
           hclustfun = fclus, distfun = fdist,
           RowSideColors = DFclinical_cohort$colAnn,
-          labRow = DFclinical_cohort[rownames(betas_probes620_cohort),'LSS'],
+          labRow = DFclinical_cohort[rownames(betas_probes620_cohort),'ID'],
           trace = 'none',
           #           Colv = FALSE,
           srtCol = 45,
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes620_cohort),'LSS'],DFclinical_cohort[rownames(betas_probes620_cohort),'TypeSurvival']),
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes620_cohort),'ID'],DFclinical_cohort[rownames(betas_probes620_cohort),'TypeSurvival']),
           main=paste('heatmap of 620 beta values of methylation probes\n for full cohort of',length(rownames(betas_probes620_cohort)),'samples of 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )
@@ -362,18 +362,18 @@ dev.off()
 message('saving heatmap RDS for full cohort and treatment related probes in ', pheatmapRDS_treatment_related_cohort)
 saveRDS(p1, file = pheatmapRDS_treatment_related_cohort)
 # short
-rownames(betas_probes620_cohort_short) <- paste(DFclinical_cohort[rownames(betas_probes620_cohort_short),'LSS'],DFclinical_cohort[rownames(betas_probes620_cohort_short),'TypeSurvival'], 'survivor')
+rownames(betas_probes620_cohort_short) <- paste(DFclinical_cohort[rownames(betas_probes620_cohort_short),'ID'],DFclinical_cohort[rownames(betas_probes620_cohort_short),'TypeSurvival'], 'survivor')
 message('saving heatmap for short survivors of cohort and treatment related probes in ', pheatmap_treatment_related_cohort_short)
 png(file = pheatmap_treatment_related_cohort_short, width = 1000, height = 1000, pointsize = 14) #width = 1846,height = 991
 p2 = heatmap.2(as.matrix(betas_probes620_cohort_short),
           col = rev(brewer.pal(n=11,'RdYlBu')),
           hclustfun = fclus, distfun = fdist,
           RowSideColors = DFclinical_cohort[rownames(betas_probes620_cohort_short),'colAnn'],
-          labRow = DFclinical_cohort[rownames(betas_probes620_cohort_short),'LSS'],
+          labRow = DFclinical_cohort[rownames(betas_probes620_cohort_short),'ID'],
           trace = 'none',
           #           Colv = FALSE,
           srtCol = 45,
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes620_cohort_short),'LSS'],DFclinical_cohort[rownames(betas_probes620_cohort_short),'TypeSurvival']),
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes620_cohort_short),'ID'],DFclinical_cohort[rownames(betas_probes620_cohort_short),'TypeSurvival']),
           main=paste('heatmap of beta values of 620 methylation probes\n for cohort of',length(rownames(betas_probes620_cohort_short)),'samples of short survivors with 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )
@@ -382,18 +382,18 @@ dev.off()
 message('saving heatmap RDS for short survivors of cohort and treatment related probes in ', pheatmapRDS_treatment_related_cohort_short)
 saveRDS(p2, file = pheatmapRDS_treatment_related_cohort_short)
 # long
-rownames(betas_probes620_cohort_long) <- paste(DFclinical_cohort[rownames(betas_probes620_cohort_long),'LSS'],DFclinical_cohort[rownames(betas_probes620_cohort_long),'TypeSurvival'], 'survivor')
+rownames(betas_probes620_cohort_long) <- paste(DFclinical_cohort[rownames(betas_probes620_cohort_long),'ID'],DFclinical_cohort[rownames(betas_probes620_cohort_long),'TypeSurvival'], 'survivor')
 message('saving heatmap for long survivors of cohort and treatment related probes in ', pheatmap_treatment_related_cohort_long)
 png(file = pheatmap_treatment_related_cohort_long, width = 1000, height = 1000, pointsize = 14) #width = 1846,height = 991
 p3 = heatmap.2(as.matrix(betas_probes620_cohort_long),
           col = rev(brewer.pal(n=11,'RdYlBu')),
           hclustfun = fclus, distfun = fdist,
           RowSideColors = DFclinical_cohort[rownames(betas_probes620_cohort_long),'colAnn'],
-          labRow = DFclinical_cohort[rownames(betas_probes620_cohort_long),'LSS'],
+          labRow = DFclinical_cohort[rownames(betas_probes620_cohort_long),'ID'],
           trace = 'none',
           #           Colv = FALSE,
           srtCol = 45,
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes620_cohort_long),'LSS'],DFclinical_cohort[rownames(betas_probes620_cohort_long),'TypeSurvival']),
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes620_cohort_long),'ID'],DFclinical_cohort[rownames(betas_probes620_cohort_long),'TypeSurvival']),
           main=paste('heatmap of beta values of 620 methylation probes\n for cohort of',length(rownames(betas_probes620_cohort_long)),'samples of long survivors with 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )
@@ -427,18 +427,18 @@ saveRDS(betas_probes342_cohort_long, file = pBetas_glass_hypermodulator_342probe
 
 # # make heatmap for betas
 # full
-# rownames(betas_probes342_cohort) <- paste(DFclinical_cohort[rownames(betas_probes342_cohort),'LSS'],DFclinical_cohort[rownames(betas_probes342_cohort),'TypeSurvival'], 'survivor')
+# rownames(betas_probes342_cohort) <- paste(DFclinical_cohort[rownames(betas_probes342_cohort),'ID'],DFclinical_cohort[rownames(betas_probes342_cohort),'TypeSurvival'], 'survivor')
 message('saving heatmap for full cohort and hypermodulator probes in ', pheatmap_hypermodulator_cohort)
 png(file = pheatmap_hypermodulator_cohort, width = 1000, height = 1000, pointsize = 14) #width = 1846,height = 991
 p1 = heatmap.2(as.matrix(betas_probes342_cohort),
           col = rev(brewer.pal(n=11,'RdYlBu')),
           hclustfun = fclus, distfun = fdist,
           RowSideColors = DFclinical_cohort$colAnn,
-          labRow = DFclinical_cohort[rownames(betas_probes342_cohort),'LSS'],
+          labRow = DFclinical_cohort[rownames(betas_probes342_cohort),'ID'],
           trace = 'none',
           #           Colv = FALSE,
           srtCol = 45,
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes342_cohort),'LSS'],DFclinical_cohort[rownames(betas_probes342_cohort),'TypeSurvival']),
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes342_cohort),'ID'],DFclinical_cohort[rownames(betas_probes342_cohort),'TypeSurvival']),
           main=paste('heatmap of 342 beta values of methylation probes\n for full cohort of',length(rownames(betas_probes342_cohort)),'samples of 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )
@@ -454,18 +454,18 @@ dev.off()
 message('saving heatmap RDS for full cohort and hypermodulator probes in ', pheatmapRDS_hypermodulator_cohort)
 saveRDS(p1, file = pheatmapRDS_hypermodulator_cohort)
 # short
-rownames(betas_probes342_cohort_short) <- paste(DFclinical_cohort[rownames(betas_probes342_cohort_short),'LSS'],DFclinical_cohort[rownames(betas_probes342_cohort_short),'TypeSurvival'], 'survivor')
+rownames(betas_probes342_cohort_short) <- paste(DFclinical_cohort[rownames(betas_probes342_cohort_short),'ID'],DFclinical_cohort[rownames(betas_probes342_cohort_short),'TypeSurvival'], 'survivor')
 message('saving heatmap for short survivors of cohort and hypermodulator probes in ', pheatmap_hypermodulator_cohort_short)
 png(file = pheatmap_hypermodulator_cohort_short, width = 1000, height = 1000, pointsize = 14) #width = 1846,height = 991
 p2 = heatmap.2(as.matrix(betas_probes342_cohort_short),
           col = rev(brewer.pal(n=11,'RdYlBu')),
           hclustfun = fclus, distfun = fdist,
           RowSideColors = DFclinical_cohort[rownames(betas_probes620_cohort_short),'colAnn'],
-          labRow = DFclinical_cohort[rownames(betas_probes620_cohort_short),'LSS'],
+          labRow = DFclinical_cohort[rownames(betas_probes620_cohort_short),'ID'],
           trace = 'none',
           #           Colv = FALSE,
           srtCol = 45,
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes342_cohort_short),'LSS'],DFclinical_cohort[rownames(betas_probes342_cohort_short),'TypeSurvival']),
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes342_cohort_short),'ID'],DFclinical_cohort[rownames(betas_probes342_cohort_short),'TypeSurvival']),
           main=paste('heatmap of beta values of 342 methylation probes\n for full cohort of',length(rownames(betas_probes342_cohort_short)),'samples of short survivors with 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )
@@ -474,18 +474,18 @@ dev.off()
 message('saving heatmap RDS for short survivors of cohort and hypermodulator probes in ', pheatmapRDS_hypermodulator_cohort_short)
 saveRDS(p2, file = pheatmapRDS_hypermodulator_cohort_short)
 # long
-rownames(betas_probes342_cohort_long) <- paste(DFclinical_cohort[rownames(betas_probes342_cohort_long),'LSS'],DFclinical_cohort[rownames(betas_probes342_cohort_long),'TypeSurvival'], 'survivor')
+rownames(betas_probes342_cohort_long) <- paste(DFclinical_cohort[rownames(betas_probes342_cohort_long),'ID'],DFclinical_cohort[rownames(betas_probes342_cohort_long),'TypeSurvival'], 'survivor')
 message('saving heatmap for long survivors of cohort and hypermodulator probes in ', pheatmap_hypermodulator_cohort_long)
 png(file = pheatmap_hypermodulator_cohort_long, width = 1000, height = 1000, pointsize = 14) #width = 1846,height = 991
 p3 = heatmap.2(as.matrix(betas_probes342_cohort_long),
           col = rev(brewer.pal(n=11,'RdYlBu')),
           hclustfun = fclus, distfun = fdist,
           RowSideColors = DFclinical_cohort[rownames(betas_probes342_cohort_long),'colAnn'],
-          labRow = DFclinical_cohort[rownames(betas_probes342_cohort_long),'LSS'],
+          labRow = DFclinical_cohort[rownames(betas_probes342_cohort_long),'ID'],
           trace = 'none',
           #           Colv = FALSE,
           srtCol = 45,
-          #           labRow = paste(DFclinical_cohort[rownames(betas_probes342_cohort_long),'LSS'],DFclinical_cohort[rownames(betas_probes342_cohort_long),'TypeSurvival']),
+          #           labRow = paste(DFclinical_cohort[rownames(betas_probes342_cohort_long),'ID'],DFclinical_cohort[rownames(betas_probes342_cohort_long),'TypeSurvival']),
           main=paste('heatmap of beta values of 342 methylation probes\n for full cohort of',length(rownames(betas_probes342_cohort_long)),'samples of long survivors with 1p/19q oligodendroglioma'),
           margin=c(10,20)
 )

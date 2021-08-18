@@ -71,7 +71,7 @@ badSampleCutoff <- 12
 meds <- (qc$mMed + qc$uMed)/2
 whichBad <- which((meds < badSampleCutoff))
 sentrixBadQCCohort <- rownames(qc)[whichBad]
-namesBad <- DFclinical_full_cohort[sentrixBadQCCohort,'LSS']
+namesBad <- DFclinical_full_cohort[sentrixBadQCCohort,'ID']
 
 message('saving plot of quality control of Mset of full cohort samples in ', pqcplotMset_full_cohort)
 png(file = pqcplotMset_full_cohort, width = 1440, height = 1280) #width = 1846,height = 991
@@ -101,21 +101,24 @@ densityPlot(Mset_full_cohort, sampGroups=ifelse(1:ncol(Mset_full_cohort) %in% wh
 title('Densityplot of Mset of samples of the full cohort, categorized by quality')
 dev.off()
 
-
+# # # grab bad samples from cohort depending on Shallow Sequencing
 typesBad1p19qCohort <- grep('1p/19q', DFclinical_full_cohort$Type, value=T, invert = T)
+# # # grab bad samples from cohort depending on minfiQC
 sentrixBad1p19qCohort <- DFclinical_full_cohort$Sentrix_ID[DFclinical_full_cohort$Type %in% typesBad1p19qCohort]
+# # # take union of above sets and remove from DFclinical_cohort by keeping the good ones
 sentrixBadCohort <- union(sentrixBadQCCohort,sentrixBad1p19qCohort)
 sentrixGoodCohort <- setdiff(DFclinical_full_cohort$Sentrix_ID, sentrixBadCohort)
 DFclinical_cohort <- DFclinical_full_cohort[sentrixGoodCohort,]
-
 message('saving clinical dataframe for good samples of 1p/19q of cohort in ', pDFclinical_cohort)
 saveRDS(DFclinical_cohort, file = pDFclinical_cohort)
 
+# # # do the same for DFclinical_gliomas
 sentrixGoodGliomas <- setdiff(DFclinical_full_gliomas$Sentrix_ID,sentrixBadCohort)
 DFclinical_gliomas <- DFclinical_full_gliomas[sentrixGoodGliomas,]
 message('saving clinical dataframe for good samples of 1p/19q of cohort and gliomas in ', pDFclinical_gliomas)
 saveRDS(DFclinical_gliomas, file = pDFclinical_gliomas)
 
+# # # do the same for DFclinical_inhouse
 sentrixGoodInhouse <- setdiff(DFclinical_full_inhouse$Sentrix_ID,sentrixBadCohort)
 DFclinical_inhouse <- DFclinical_full_inhouse[sentrixGoodInhouse,]
 message('saving clinical dataframe for good samples of 1p/19q of cohort and inhouse in ', pDFclinical_inhouse)
