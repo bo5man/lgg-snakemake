@@ -150,4 +150,3 @@ message('saving betas for good samples of cohort and inhouse in ', pBetas_inhous
 saveRDS(betas_inhouse, file = pBetas_inhouse)
 
 sink()
-sink()

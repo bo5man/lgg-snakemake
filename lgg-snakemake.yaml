@@ -20,6 +20,7 @@ dependencies:
     - r-rtsne #=0.15
     - r-rspectra #=0.16_0
     - r-ggplot2 #=3.3.5
+    - r-ggfortify
     - r-stringr #=1.4.0
     - r-openxlsx #=4.2.4
     - r-rcolorbrewer #=1.1_2
@@ -29,3 +30,4 @@ dependencies:
     - r-randomforestSRC #=2.12.0
     - r-pROC #=1.17.0.1
     - r-glmnet #=4.1.2
+    - r-caret

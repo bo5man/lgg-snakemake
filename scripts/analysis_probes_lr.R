@@ -32,6 +32,7 @@ if (msg){
 ##################
 # # # input file paths
 pBetas_gCIMP <- snakemake@input[["betas_gCIMP"]]
+pBetas_gCIMP <- snakemake@input[["betas_GLASS_treatment_related"]]
 #pBetas_gCIMP_thresholded <- snakemake@input[["betas_gCIMP_thresholded"]]
 # pBetas_gCIMP <- './../results/analysis_probes/gCIMP_7probes/betas_gCIMP.RDS'
 # pBetas_gCIMP_thresholded <- './../results/analysis_probes/gCIMP_7probes/betas_gCIMP_thresholded.RDS'
@@ -164,51 +165,65 @@ for (k in 1:nrepeats) {
                     ind1[1:round(length(ind1)*train_percentage)])
   indices_test = c(ind0[(round(length(ind0)*train_percentage)+1):length(ind0)],
                    ind1[(round(length(ind1)*train_percentage)+1):length(ind1)])
-  best_lambda = cv.glmnet(features[indices_train,], outcome[indices_train], alpha=myalpha, penalty.factor = penaltyfactor, nfolds=5, family="binomial")$lambda.min
+  net = cv.glmnet(features[indices_train,], outcome[indices_train], alpha=myalpha, penalty.factor = penaltyfactor, nfolds=5, type.measure='class', family="binomial")
+  # plot(net)
+  best_lambda = net$lambda.min
   model_trains[[k]] = glmnet(features[indices_train,], outcome[indices_train], alpha=myalpha, penalty.factor = penaltyfactor, family="binomial", lambda=best_lambda)
-  prob_tests[[k]] = as.vector(predict(model_trains[[k]], type="response", newx=features[indices_test,]))
-  myrocs[[k]] = pROC::roc(outcome[indices_test]~prob_tests[[k]],
+  prob_tests[[k]] <- predict(model_trains[[k]], newx=features[indices_test,], type="response", type.measure='class')
+  myrocs[[k]] = pROC::roc(outcome[indices_test]~as.vector(prob_tests[[k]]),
                     #                     levels=c('short','long'),
                     direction="<", quiet=TRUE)
   aucs[k] = myrocs[[k]]$auc
 }
 
-message('The gCIMP features model: the mean area under the curve over ',nrepeats,' repeats is ', mean(aucs))
-message('saving the trained generalized linear model, test probabilities and roc for gCIMP features in ', pglm_stats_gCIMP)
-glm_stats_gCIMP = list('model_trains' = model_trains, 'prob_tests' = prob_tests, 'myrocs' = myrocs)
-saveRDS(glm_stats_gCIMP, file = pglm_stats_gCIMP)
+# message('The gCIMP features model: the mean area under the curve over ',nrepeats,' repeats is ', mean(aucs))
+# message('saving the trained generalized linear model, test probabilities and roc for gCIMP features in ', pglm_stats_gCIMP)
+# glm_stats_gCIMP = list('model_trains' = model_trains, 'prob_tests' = prob_tests, 'myrocs' = myrocs)
+# saveRDS(glm_stats_gCIMP, file = pglm_stats_gCIMP)
+
+
+# # # sample indices (train_percentage*nrow(outcome))x nrepeats)-matrix
+
+
+cvnets = list()
+model_trains = list()
+prediction_validations = list()
+
+
+indices_train_times <- createDataPartition(outcome,times= nrepeats, p=train_percentage, list=F)
+for (k in 1:nrepeats){
+    indices_train <- indices_train_times[,k]
+    training_expression <- features[indices_train,]
+    training_phenotype <- outcome[indices_train]
+    validation_expression <- features[-indices_train,]
+    validation_phenotype <- outcome[-indices_train]
+    # # cross validation
+    cvnet <- cv.glmnet(training_expression, training_phenotype, alpha=myalpha, penalty.factor = penaltyfactor, nfolds=5, type.measure='class', family="binomial")
+    cvnets[[k]] <- cvnet
+    # plot(cvnet)
+    best_lambda <- cvnet$lambda.min
+    # # actual model training
+    model_train <- glmnet(training_expression, training_phenotype, alpha=myalpha, penalty.factor = penaltyfactor, family="binomial", lambda=best_lambda)
+    model_trains[[k]] <- model_train
+    # # prediction of classes for validation set
+    prediction_validation <- predict(model_train, newx=validation_expression, type="class", type.measure='class')
+    prediction_validations[[k]] <- prediction_validation
+    prediction_validation <- factor(as.vector(prediction_validation),levels=levels(outcome))
+    # # confusion Matrix
+    cm <- confusionMatrix(prediction_validation,validation_phenotype)
+    # as.table(cm)
+    # write.xlsx(as.table(cm),file=pglm_stats_gCIMP, sheetName='confusionMatrix')
+    # # statistics like Sensitivity, Specificity etc
+    # as.matrix(cm$byClass, what = "classes")
+    # write.xlsx(as.matrix(cm$byClass, what = "classes"),file=pglm_stats_gCIMP, sheetName='statistics')
+    
+}
+
+# message('saving the trained generalized linear model, test probabilities and roc for gCIMP features in ', pglm_stats_gCIMP)
+# glm_stats_gCIMP = list('model_trains' = model_trains, 'prob_tests' = prob_tests, 'myrocs' = myrocs)
+# saveRDS(glm_stats_gCIMP, file = pglm_stats_gCIMP)
 
 
 
-# # # # General linear model for thrsholded gCIMP features
-# myalpha = 0 #alpha=0 ridge, alpha=1 LASSO
-# penaltyfactor = rep(1,ncol(features_thresholded)) #1 is penalized, 0 is unpenalized
-# train_percentage = 0.8 
-# nrepeats = 250
-# 
-# aucs = numeric(nrepeats) 
-# indices0 = (1:length(outcome))[outcome=='short']
-# indices1 = (1:length(outcome))[outcome=='long']
-# for (k in 1:nrepeats) {
-#   ind0 = sample(indices0)
-#   ind1 = sample(indices1)
-#   indices_train = c(ind0[1:round(length(ind0)*train_percentage)],
-#                     ind1[1:round(length(ind1)*train_percentage)])
-#   indices_test = c(ind0[(round(length(ind0)*train_percentage)+1):length(ind0)],
-#                    ind1[(round(length(ind1)*train_percentage)+1):length(ind1)])
-#   best_lambda = cv.glmnet(features_thresholded[indices_train,], outcome[indices_train], alpha=myalpha, penalty.factor = penaltyfactor, nfolds=5, family="binomial")$lambda.min
-#   model_train = glmnet(features_thresholded[indices_train,], outcome[indices_train], alpha=myalpha, penalty.factor = penaltyfactor, family="binomial", lambda=best_lambda)
-#   prob_test = as.vector(predict(model_train, type="response", newx=features_thresholded[indices_test,]))
-#   myroc = pROC::roc(outcome[indices_test]~prob_test,
-#                     #                     levels=c('short','long'),
-#                     direction="<", quiet=TRUE)
-#   aucs[k] = myroc$auc
-# }
-# 
-# message('The thresholded gCIMP features model: the mean area under the curve over ',nrepeats,' repeats is ', mean(aucs))
-# message('saving the trained generalized linear model, test probabilities and roc for thresholded gCIMP features in ', pglm_stats_gCIMP_thresholded)
-# glm_stats_gCIMP_thresholded = list('model_train' = model_train, 'prob_test' = prob_test, 'myroc' = myroc)
-# saveRDS(glm_stats_gCIMP_thresholded, file = pglm_stats_gCIMP_thresholded)
 
-sink()
 sink()

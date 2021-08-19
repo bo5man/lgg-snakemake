@@ -495,4 +495,3 @@ message('saving heatmap RDS for long survivors of cohort and hypermodulator prob
 saveRDS(p3, file = pheatmapRDS_hypermodulator_cohort_long)
 
 sink()
-sink()
