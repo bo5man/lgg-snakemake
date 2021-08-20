@@ -141,10 +141,12 @@ rule all: #uncomment which branch you want for testing
         ###TO-DO: DIR_ANALYSIS_PROBES + 'forest_full_cohort.RDS',     # analysis_probes_rf
         ###TO-DO: DIR_ANALYSIS_PROBES + 'forest_roc_full_cohort.RDS',     # analysis_probes_rf
         ####### analysis_probes_lr branch
-        glm_stats_gCIMP =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_gCIMP.RDS', # analysis_probes_lr
-        #glm_stats_gCIMP_thresholded =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_gCIMP_thresholded.RDS', # analysis_probes_lr
+        glm_fullstats_gCIMP =   DIR_ANALYSIS_PROBES_LR + 'glm_fullstats_gCIMP.RDS', # analysis_probes_lr
+        glm_stats_gCIMP =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_gCIMP.xlsx', # analysis_probes_lr
         DFfeatures_gCIMP =  DIR_ANALYSIS_PROBES_LR + 'DFfeatures_gCIMP.RDS',    # analysis_probes_lr
-        #DFfeatures_gCIMP_thresholded =  DIR_ANALYSIS_PROBES_LR + 'DFfeatures_gCIMP_thresholded.RDS',    # analysis_probes_lr
+        glm_fullstats_glass_treatment_related =   DIR_ANALYSIS_PROBES_LR + 'glm_fullstats_glass_treatment_related.RDS', # analysis_probes_lr
+        glm_stats_glass_treatment_related =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_glass_treatment_related.xlsx', # analysis_probes_lr
+        DFfeatures_glass_treatment_related =  DIR_ANALYSIS_PROBES_LR + 'DFfeatures_glass_treatment_related.RDS',    # analysis_probes_lr
 
 rule create_RGset:
     input:
@@ -399,13 +401,15 @@ rule analysis_probes:
 rule analysis_probes_lr:
     input:
         betas_gCIMP =               DIR_gCIMP + 'betas_gCIMP.RDS',   # analysis_probes
-        #betas_gCIMP_thresholded = DIR_gCIMP + 'betas_gCIMP_thresholded.RDS',   # analysis_probes
+        betas_glass_treatment_related_620probes =       DIR_GLASS + 'treatment_related_620probes/' + 'betas_treatment_related_620probes.RDS',   # analysis_probes
         DFclinical_cohort =    DIR_OUT + 'DFclinical_cohort.RDS',    # create_clinicalDF
     output:
-        glm_stats_gCIMP =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_gCIMP.RDS', # analysis_probes_lr
-        #glm_stats_gCIMP_thresholded =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_gCIMP_thresholded.RDS', # analysis_probes_lr
+        glm_fullstats_gCIMP =   DIR_ANALYSIS_PROBES_LR + 'glm_fullstats_gCIMP.RDS', # analysis_probes_lr
+        glm_stats_gCIMP =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_gCIMP.xlsx', # analysis_probes_lr
         DFfeatures_gCIMP =  DIR_ANALYSIS_PROBES_LR + 'DFfeatures_gCIMP.RDS',    # analysis_probes_lr
-        #DFfeatures_gCIMP_thresholded =  DIR_ANALYSIS_PROBES_LR + 'DFfeatures_gCIMP_thresholded.RDS',    # analysis_probes_lr
+        glm_fullstats_glass_treatment_related =   DIR_ANALYSIS_PROBES_LR + 'glm_fullstats_glass_treatment_related.RDS', # analysis_probes_lr
+        glm_stats_glass_treatment_related =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_glass_treatment_related.xlsx', # analysis_probes_lr
+        DFfeatures_glass_treatment_related =  DIR_ANALYSIS_PROBES_LR + 'DFfeatures_glass_treatment_related.RDS',    # analysis_probes_lr
     params:
         DIR_OUT =   DIR_OUT,
         dir_analysis_probes = DIR_ANALYSIS_PROBES,
