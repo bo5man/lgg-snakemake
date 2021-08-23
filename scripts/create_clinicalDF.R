@@ -37,7 +37,7 @@ pDFclinical_full_inhouse <-      snakemake@output[["DFclinical_full_inhouse"]]
 
 # # parameters
 # pinhouse <- './../../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx'
-# pcohort <- './../../LGG_Methylation/Overview_oligodendroglioma_samples_long_vs_short_PFS_2021-07-14.xlsx'
+# pcohort <- './../../LGG_Methylation/Overview_oligodendroglioma_samples_long_vs_short_PFS.xlsx'
 pinhouse <- snakemake@params[['inhouse']]
 pcohort <- snakemake@params[['overview']]
 
@@ -49,7 +49,8 @@ source(file.path(dir_mnp,"R","RSpectra_pca.R"))
 
 log<-snakemake@log[[1]]
 log<-file(log, open="wt")
-sink(log, append=T, split=FALSE)
+sink(log, append=T, split=FALSE, type='output')
+sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # read input

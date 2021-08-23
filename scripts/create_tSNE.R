@@ -280,6 +280,8 @@ ggplot(sDF_inhouse, aes(x=X1, y=X2, col=Type)) +
 dev.off()
 
 
+# # Example of showing only the Cohort
+
 # ggplot(sDF_inhouse[sDF_inhouse$Cohort_ID == 'FullCohort',], aes(x=X1, y=X2, col=Type)) +
 #     geom_point()  +
 #     # geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=Type)) +

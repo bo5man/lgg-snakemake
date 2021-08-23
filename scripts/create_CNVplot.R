@@ -163,4 +163,3 @@ dev.off()
 
 
 sink()
-sink()

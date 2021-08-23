@@ -85,4 +85,3 @@ message('saving singleMset_noob in ', psingleMset_noob)
 saveRDS(singleMset_noob, file = psingleMset_noob)
 
 sink()
-sink()

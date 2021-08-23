@@ -266,6 +266,7 @@ rule check_QC:
         betas_gliomas =     DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
         betas_inhouse =     DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
     params:
+        overview    = config['paths']['overview'],
         dir_full_cohort   = DIR_FULL_COHORT,
         dir_qc     = DIR_QC,
         suppressMessages    = config['options']['suppressMessages'],

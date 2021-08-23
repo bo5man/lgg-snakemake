@@ -41,4 +41,3 @@ message('saving RGset in ', pRGset)
 saveRDS(RGset, file = pRGset)
 
 sink()
-sink()

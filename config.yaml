@@ -4,7 +4,7 @@ paths:
     out: '../output-lgg-test/results/' # directory of all output directory and files, string
     log: '../output-lgg-test/log/' # directory of the log files, string
     mnp: '../LGG_Methylation/mnp_training/' # directory of the cloned Github Repository of Heidelberg, string
-    overview: '../LGG_Methylation/Overview_oligodendroglioma_samples_long_vs_short_PFS_2021-07-14.xlsx' # path of clinical data of full cohort, string, assumed .xlsx
+    overview: '../LGG_Methylation/Overview_oligodendroglioma_samples_long_vs_short_PFS.xlsx' # path of clinical data of full cohort, string, assumed .xlsx
     inhouse: '../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx' # path to clinical data of inhouse, string, assumed .xlsx
 
 probes:

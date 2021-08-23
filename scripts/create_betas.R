@@ -72,4 +72,3 @@ saveRDS(betas_mnp_filtered, file = pbetas_mnp_filtered)
 # 
 
 sink()
-sink()
