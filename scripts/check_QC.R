@@ -32,6 +32,7 @@ pdensityplotMset_full_cohort <- snakemake@output[['densityplotMset_full_cohort']
 pDFclinical_cohort <- snakemake@output[['DFclinical_cohort']]
 pDFclinical_gliomas <- snakemake@output[['DFclinical_gliomas']]
 pDFclinical_inhouse <- snakemake@output[['DFclinical_inhouse']]
+pDFclinical_cohort_csv <- snakemake@output[['DFclinical_cohort_csv']]
 pBetas_cohort<- snakemake@output[["betas_cohort"]]
 pBetas_gliomas <- snakemake@output[["betas_gliomas"]]
 pBetas_inhouse <- snakemake@output[["betas_inhouse"]]
@@ -137,6 +138,10 @@ DFclinical_cohort <- DFclinical_full_cohort[!rownames(DFclinical_full_cohort) %i
 message('saving clinical dataframe for good samples of 1p/19q of cohort in ', pDFclinical_cohort)
 saveRDS(DFclinical_cohort, file = pDFclinical_cohort)
 
+message('saving clinical dataframe as cnv of good samples of 1p/19q cohort in ', pDFclinical_cohort_csv)
+write.csv2(DFclinical_cohort, file = pDFclinical_cohort_csv)
+
+
 # # # do the same for DFclinical_gliomas
 DFclinical_gliomas <- DFclinical_full_gliomas[!rownames(DFclinical_full_gliomas) %in% sentrixBadCohort,]
 message('saving clinical dataframe for good samples of 1p/19q of cohort and gliomas in ', pDFclinical_gliomas)
@@ -154,6 +159,7 @@ betas_cohort <- betas[i,]
 
 message('saving betas for good samples of cohort in ', pBetas_cohort)
 saveRDS(betas_cohort, file = pBetas_cohort)
+
 
 # # define betas for cohort and gliomas
 

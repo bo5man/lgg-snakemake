@@ -29,6 +29,9 @@ if (msg){
 pBetas_cohort<- snakemake@input[["betas_cohort"]]
 pBetas_gliomas <- snakemake@input[["betas_gliomas"]]
 pBetas_inhouse <- snakemake@input[["betas_inhouse"]]
+pDFclinical_cohort <-  snakemake@input[["DFclinical_cohort"]]
+pDFclinical_gliomas <-      snakemake@input[["DFclinical_gliomas"]]
+pDFclinical_inhouse <-      snakemake@input[["DFclinical_inhouse"]]
 # qcMset <- snakemake@input[['qcMset']]
 # pbetas <- './../results/betas/betas.RDS'
 # pqcplotMset_cohort <- './../results/Mset/qcplotMset_cohort.png'
@@ -57,9 +60,6 @@ ptsneplot_inhouse_ID <-            snakemake@output[["tsneplot_inhouse_ID"]]
 # pqcplotMset_cohort = DIR_MSET + 'qcplotMset_cohort.png',                   # create_Msets
 
 # # parameters
-pDFclinical_cohort <-  snakemake@params[["DFclinical_cohort"]]
-pDFclinical_gliomas <-      snakemake@params[["DFclinical_gliomas"]]
-pDFclinical_inhouse <-      snakemake@params[["DFclinical_inhouse"]]
 
 dir_tsne <- snakemake@params[['dir_tsne']]
 # dir_perplexity <- snakemake@params[['dir_perplexity']]

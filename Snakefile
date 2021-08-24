@@ -2,6 +2,7 @@
 import os
 
 configfile: "config.yaml"
+# report: "report/workflow.rst"
 
 DIR_IDATS   = os.path.join(config['paths']['all_idats'], '')
 #DIR_IDATS   = os.path.join(config['paths']['selected_idats'], '')
@@ -74,6 +75,7 @@ rule all: #uncomment which branch you want for testing
         DFclinical_full_cohort =    DIR_OUT + 'DFclinical_full_cohort.RDS',     # create_clinicalDF
         DFclinical_full_gliomas =   DIR_OUT + 'DFclinical_full_gliomas.RDS',    # create_clinicalDF
         DFclinical_full_inhouse =   DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
+        DFclinical_full_cohort_csv =    DIR_OUT + 'DFclinical_full_cohort.csv',     # create_clinicalDF
         ##### create untill check_QC  #####
         qcMset_full_cohort =            DIR_QC + 'qcMset_full_cohort.RDS',                  # create_QC
         qcplotMset_full_cohort =        DIR_QC + 'qcplotMset_full_cohort.png',              # create_QC
@@ -81,6 +83,7 @@ rule all: #uncomment which branch you want for testing
         DFclinical_cohort =     DIR_OUT + 'DFclinical_cohort.RDS',  # check_QC
         DFclinical_gliomas =    DIR_OUT + 'DFclinical_gliomas.RDS', # check_QC
         DFclinical_inhouse =    DIR_OUT + 'DFclinical_inhouse.RDS', # check_QC
+        DFclinical_cohort_csv = DIR_OUT + 'DFclinical_cohort.csv',     # check_QC
         betas_cohort =      DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
         betas_gliomas =     DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
         betas_inhouse =     DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
@@ -153,14 +156,13 @@ rule create_RGset:
         # sentrix  = DIR_IDATS + '{sentrix}_Grn.idat',
         sentrix  = expand(DIR_IDATS + '{sentrix}_Grn.idat', sentrix = SENTRIXS.keys()),
     output:
-        # RGset  = DIR_RGSET + '{sentrix}_RGset.RDS',                             # create_RGset
         RGset  = DIR_RGSET + 'RGset.RDS',                             # create_RGset
+        # RGset  = report(DIR_RGSET + 'RGset.RDS', category="Create raw data sets", subcategory="RedGreen Methylation Channels"),                             # create_RGset
     params:
         dir_rgset   = DIR_RGSET,
         dir_mnp = DIR_MNP,
         suppressMessages    = config['options']['suppressMessages'],
     log:
-        #DIR_LOG + "create_RGset/{sentrix}.log"
         DIR_LOG + "create_RGset/log.log"
     script:
         'scripts/create_RGset.R'
@@ -169,9 +171,11 @@ rule create_Msets:
     input:
         RGset  = DIR_RGSET + 'RGset.RDS',                             # create_RGset
     output:
+        # Mset  = report(DIR_MSET + 'Mset.RDS', category="Create raw data sets", subcategory="Methylation set"),                             # create_Msets
         Mset  = DIR_MSET + 'Mset.RDS',                             # create_Msets
         Mset_mnp_filtered  = DIR_MSET + 'Mset_mnp_filtered.RDS',   # create_Msets
         Mset_raw    = DIR_MSET + 'Mset_raw.RDS',                   # create_Msets
+        # Mset_raw    = report(DIR_MSET + 'Mset_raw.RDS', category="Create raw data sets", subcategory="raw preprocessed Methylation set"),                   # create_Msets
         Mset_noob    = DIR_MSET + 'Mset_noob.RDS',                   # create_Msets
     params:
         dir_mnp = DIR_MNP,
@@ -187,6 +191,7 @@ rule create_betas:
         Mset  = DIR_MSET + 'Mset.RDS',                             # create_Msets
         Mset_mnp_filtered  = DIR_MSET + 'Mset_mnp_filtered.RDS',   # create_Msets
     output:
+        # betas   = report(DIR_BETAS + 'betas.RDS', category="Create raw data sets", subcategory="beta values of Methylation set"),                            # create_betas
         betas   = DIR_BETAS + 'betas.RDS',                            # create_betas
         betas_mnp_filtered  = DIR_BETAS + 'betas_mnp_filtered.RDS',   # create_betas
         # betas_mnp_filtered_sd  = DIR_BETAS + 'betas_mnp_filtered_sd.RDS',     # create_betas_sorted_sd
@@ -235,6 +240,8 @@ rule create_clinicalDF:
         DFclinical_full_cohort =    DIR_OUT + 'DFclinical_full_cohort.RDS',     # create_clinicalDF
         DFclinical_full_gliomas =   DIR_OUT + 'DFclinical_full_gliomas.RDS',    # create_clinicalDF
         DFclinical_full_inhouse =   DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
+        # DFclinical_full_inhouse =   report(DIR_OUT + 'DFclinical_full_inhouse.RDS', category="Clinical data sets", subcategory="full data set")    # create_clinicalDF
+        DFclinical_full_cohort_csv =    report(DIR_OUT + 'DFclinical_full_cohort.csv', category="Clinical data sets", subcategory="full data set"),     # create_clinicalDF
     params:
         dir_betas = DIR_BETAS,
         dir_mnp = DIR_MNP,
@@ -257,14 +264,17 @@ rule check_QC:
         DFclinical_full_inhouse =   DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
     output:
         qcMset_full_cohort =            DIR_QC + 'qcMset_full_cohort.RDS',                  # create_QC
-        qcplotMset_full_cohort =        DIR_QC + 'qcplotMset_full_cohort.png',              # create_QC
-        densityplotMset_full_cohort =   DIR_QC + 'densityplotMset_full_cohort.png',         # create_QC
-        DFclinical_cohort =     DIR_OUT + 'DFclinical_cohort.RDS',  # check_QC
-        DFclinical_gliomas =    DIR_OUT + 'DFclinical_gliomas.RDS', # check_QC
-        DFclinical_inhouse =    DIR_OUT + 'DFclinical_inhouse.RDS', # check_QC
-        betas_cohort =      DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
-        betas_gliomas =     DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
-        betas_inhouse =     DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
+        qcplotMset_full_cohort =        report(DIR_QC + 'qcplotMset_full_cohort.png', category="Quality Control"),              # create_QC
+        densityplotMset_full_cohort =   report(DIR_QC + 'densityplotMset_full_cohort.png', category="Quality Control"),         # create_QC
+        DFclinical_cohort =             DIR_OUT + 'DFclinical_cohort.RDS',  # check_QC
+        DFclinical_gliomas =            DIR_OUT + 'DFclinical_gliomas.RDS', # check_QC
+        DFclinical_inhouse =            DIR_OUT + 'DFclinical_inhouse.RDS', # check_QC
+        DFclinical_cohort_csv =    report(DIR_OUT + 'DFclinical_cohort.csv', category="Clinical data sets", subcategory="Quality Controled data set"),     # check_QC
+        # DFclinical_inhouse =            report(DIR_OUT + 'DFclinical_inhouse.RDS', category="Clinical data sets", subcategory="Quality Controled data set"), # check_QC
+        betas_cohort =                  DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
+        betas_gliomas =                 DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
+        betas_inhouse =                 DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
+        # betas_inhouse =                 report(DIR_BETAS + 'betas_inhouse.RDS', category="Create raw data sets", subcategory="cohort and inhouse sample beta values"),            # check_QC 
     params:
         overview    = config['paths']['overview'],
         dir_full_cohort   = DIR_FULL_COHORT,
@@ -277,29 +287,32 @@ rule check_QC:
 
 rule create_tSNE:
     input:
-        betas_cohort =      DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
-        betas_gliomas =     DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
-        betas_inhouse =     DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
+        betas_cohort =          DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
+        betas_gliomas =         DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
+        betas_inhouse =         DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
+        DFclinical_cohort =     DIR_OUT + 'DFclinical_cohort.RDS',# create_clinicalDF
+        DFclinical_gliomas =    DIR_OUT + 'DFclinical_gliomas.RDS',    # create_clinicalDF
+        DFclinical_inhouse =    DIR_OUT + 'DFclinical_inhouse.RDS',    # create_clinicalDF
     output:
-        pca_cohort =   DIR_PCA + 'pca_cohort.RDS',            # create_tSNE
+        pca_cohort =        DIR_PCA + 'pca_cohort.RDS',            # create_tSNE
         pca_gliomas =       DIR_PCA + 'pca_gliomas.RDS',    # create_tSNE
         pca_inhouse =       DIR_PCA + 'pca_inhouse.RDS',    # create_tSNE
-        tsne_cohort =          DIR_RDS + 'tsne_cohort.RDS',   # create_tSNE
+        tsne_cohort =               DIR_RDS + 'tsne_cohort.RDS',        # create_tSNE
         tsne_gliomas =              DIR_RDS + 'tsne_gliomas.RDS',       # create_tSNE
         tsne_inhouse =              DIR_RDS + 'tsne_inhouse.RDS',       # create_tSNE
-        tsneplot_cohort_Type =             DIR_TSNE + 'tsneplot_cohort_Type.png',         # create_tSNE
-        tsneplot_cohort_TypeSurvival =     DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', # create_tSNE
-        tsneplot_cohort_ID =              DIR_TSNE + 'tsneplot_cohort_ID.png',          # create_tSNE
-        tsneplot_gliomas_Type =                 DIR_TSNE + 'tsneplot_gliomas_Type.png',             # create_tSNE
-        tsneplot_gliomas_TypeSurvival =         DIR_TSNE + 'tsneplot_gliomas_TypeSurvival.png',     # create_tSNE
-        tsneplot_gliomas_ID =                  DIR_TSNE + 'tsneplot_gliomas_ID.png',              # create_tSNE
-        tsneplot_inhouse_Type =                 DIR_TSNE + 'tsneplot_inhouse_Type.png',             # create_tSNE
-        tsneplot_inhouse_TypeSurvival =         DIR_TSNE + 'tsneplot_inhouse_TypeSurvival.png',     # create_tSNE
-        tsneplot_inhouse_ID =                  DIR_TSNE + 'tsneplot_inhouse_ID.png',              # create_tSNE
+        # tsne_cohort =               report(DIR_RDS + 'tsne_cohort.RDS', category="tSNE", subcategory="cohort"),   # create_tSNE
+        # tsne_gliomas =              report(DIR_RDS + 'tsne_gliomas.RDS', category="tSNE", subcategory="cohort and gliomas"),       # create_tSNE
+        # tsne_inhouse =              report(DIR_RDS + 'tsne_inhouse.RDS', category="tSNE", subcategory="cohort and inhouse"),       # create_tSNE
+        tsneplot_cohort_Type =              report(DIR_TSNE + 'tsneplot_cohort_Type.png', category="tSNE", subcategory="cohort"),         # create_tSNE
+        tsneplot_cohort_TypeSurvival =      report(DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', category="tSNE", subcategory="cohort"), # create_tSNE
+        tsneplot_cohort_ID =                report(DIR_TSNE + 'tsneplot_cohort_ID.png', category="tSNE", subcategory="cohort"),          # create_tSNE
+        tsneplot_gliomas_Type =             report(DIR_TSNE + 'tsneplot_gliomas_Type.png', category="tSNE", subcategory="cohort and gliomas"),             # create_tSNE
+        tsneplot_gliomas_TypeSurvival =     report(DIR_TSNE + 'tsneplot_gliomas_TypeSurvival.png', category="tSNE", subcategory="cohort and gliomas"),     # create_tSNE
+        tsneplot_gliomas_ID =               report(DIR_TSNE + 'tsneplot_gliomas_ID.png', category="tSNE", subcategory="cohort and gliomas"),              # create_tSNE
+        tsneplot_inhouse_Type =             report(DIR_TSNE + 'tsneplot_inhouse_Type.png', category="tSNE", subcategory="cohort and inhouse"),             # create_tSNE
+        tsneplot_inhouse_TypeSurvival =     report(DIR_TSNE + 'tsneplot_inhouse_TypeSurvival.png', category="tSNE", subcategory="cohort"),     # create_tSNE
+        tsneplot_inhouse_ID =               report(DIR_TSNE + 'tsneplot_inhouse_ID.png', category="tSNE", subcategory="cohort and inhouse"),              # create_tSNE
     params:
-        DFclinical_cohort =    DIR_OUT + 'DFclinical_cohort.RDS',# create_clinicalDF
-        DFclinical_gliomas =        DIR_OUT + 'DFclinical_gliomas.RDS',    # create_clinicalDF
-        DFclinical_inhouse =        DIR_OUT + 'DFclinical_inhouse.RDS',    # create_clinicalDF
         # sd_filter = 32000,
         # dir_pca_sd = DIR_PCA_SD,
         dir_betas = DIR_BETAS,
@@ -321,13 +334,10 @@ rule create_CNVplot:
     input:
         sentrix  = DIR_FULL_COHORT + '{sentrix_cohort}_Grn.idat',
         Mset_raw    = DIR_MSET + 'Mset_raw.RDS',                   # create_Msets
-        DFclinical_cohort =    DIR_OUT + 'DFclinical_cohort.RDS',# create_clinicalDF
         DFclinical_full_cohort =    DIR_OUT + 'DFclinical_full_cohort.RDS',# create_clinicalDF
-        DFclinical_gliomas =        DIR_OUT + 'DFclinical_gliomas.RDS',    # create_clinicalDF
-        DFclinical_inhouse =        DIR_OUT + 'DFclinical_inhouse.RDS',    # create_clinicalDF
     output:
-        cnv = DIR_CNV_RDS + '{sentrix_cohort}_cnv.RDS',                            # create_CNVplot
-        cnvplot = DIR_CNV + '{sentrix_cohort}_cnv.png',                            # create_CNVplot
+        cnv =       DIR_CNV_RDS + '{sentrix_cohort}_cnv.RDS',                            # create_CNVplot
+        cnvplot =   report(DIR_CNV + '{sentrix_cohort}_cnv.png', category="Results", subcategory="Methylation Copy Number Variation plots"),                            # create_CNVplot
     params:
         dir_full_cohort   = DIR_FULL_COHORT,
         dir_mnp     = DIR_MNP,
@@ -360,14 +370,14 @@ rule analysis_probes:
         betas_glass_hypermodulator_342probes =          DIR_GLASS + 'hypermodulator_342probes/' + 'betas_hypermodulator_342probes.RDS',   # analysis_probes
         betas_glass_hypermodulator_342probes_short =    DIR_GLASS + 'hypermodulator_342probes/' + 'betas_hypermodulator_342probes_short.RDS',   # analysis_probes
         betas_glass_hypermodulator_342probes_long =     DIR_GLASS + 'hypermodulator_342probes/' + 'betas_hypermodulator_342probes_long.RDS',   # analysis_probes
-        heatmap_gCIMP_cohort =              DIR_gCIMP + 'heatmap_gCIMP_cohort.png', # analysis_probes
+        heatmap_gCIMP_cohort =              report(DIR_gCIMP + 'heatmap_gCIMP_cohort.png', category="Results", subcategory="Heatmap of selected probes"), # analysis_probes
         heatmap_gCIMP_cohort_short =        DIR_gCIMP + 'heatmap_gCIMP_cohort_short.png', # analysis_probes
         heatmap_gCIMP_cohort_long =         DIR_gCIMP + 'heatmap_gCIMP_cohort_long.png', # analysis_probes
         #heatmap_gCIMP_cohort_thresholded =  DIR_gCIMP + 'heatmap_gCIMP_cohort_thresholded.png', # analysis_probes
-        heatmap_treatment_related_cohort =          DIR_GLASS + 'treatment_related_620probes/' + 'heatmap_treatment_related_cohort.png', # analysis_probes
+        heatmap_treatment_related_cohort =          report(DIR_GLASS + 'treatment_related_620probes/' + 'heatmap_treatment_related_cohort.png', category="Results", subcategory="Heatmap of selected probes"), # analysis_probes
         heatmap_treatment_related_cohort_short =    DIR_GLASS + 'treatment_related_620probes/' + 'heatmap_treatment_related_cohort_short.png', # analysis_probes
         heatmap_treatment_related_cohort_long =     DIR_GLASS + 'treatment_related_620probes/' + 'heatmap_treatment_related_cohort_long.png', # analysis_probes
-        heatmap_hypermodulator_cohort =          DIR_GLASS + 'hypermodulator_342probes/' + 'heatmap_hypermodulator_cohort.png', # analysis_probes
+        heatmap_hypermodulator_cohort =          report(DIR_GLASS + 'hypermodulator_342probes/' + 'heatmap_hypermodulator_cohort.png', category="Results", subcategory="Heatmap of selected probes"), # analysis_probes
         heatmap_hypermodulator_cohort_short =    DIR_GLASS + 'hypermodulator_342probes/' + 'heatmap_hypermodulator_cohort_short.png', # analysis_probes
         heatmap_hypermodulator_cohort_long =     DIR_GLASS + 'hypermodulator_342probes/' + 'heatmap_hypermodulator_cohort_long.png', # analysis_probes
         heatmapRDS_gCIMP_cohort =              DIR_gCIMP + 'heatmap_gCIMP_cohort.RDS', # analysis_probes
@@ -406,10 +416,10 @@ rule analysis_probes_lr:
         DFclinical_cohort =    DIR_OUT + 'DFclinical_cohort.RDS',    # create_clinicalDF
     output:
         glm_fullstats_gCIMP =   DIR_ANALYSIS_PROBES_LR + 'glm_fullstats_gCIMP.RDS', # analysis_probes_lr
-        glm_stats_gCIMP =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_gCIMP.xlsx', # analysis_probes_lr
+        glm_stats_gCIMP =   report(DIR_ANALYSIS_PROBES_LR + 'glm_stats_gCIMP.xlsx', category="Results", subcategory="Prediction of long-short survivors"), # analysis_probes_lr
         DFfeatures_gCIMP =  DIR_ANALYSIS_PROBES_LR + 'DFfeatures_gCIMP.RDS',    # analysis_probes_lr
         glm_fullstats_glass_treatment_related =   DIR_ANALYSIS_PROBES_LR + 'glm_fullstats_glass_treatment_related.RDS', # analysis_probes_lr
-        glm_stats_glass_treatment_related =   DIR_ANALYSIS_PROBES_LR + 'glm_stats_glass_treatment_related.xlsx', # analysis_probes_lr
+        glm_stats_glass_treatment_related =   report(DIR_ANALYSIS_PROBES_LR + 'glm_stats_glass_treatment_related.xlsx', category="Results", subcategory="Prediction of long-short survivors"), # analysis_probes_lr
         DFfeatures_glass_treatment_related =  DIR_ANALYSIS_PROBES_LR + 'DFfeatures_glass_treatment_related.RDS',    # analysis_probes_lr
     params:
         DIR_OUT =   DIR_OUT,

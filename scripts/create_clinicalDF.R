@@ -34,6 +34,7 @@ pDFclinical_full_cohort <-      snakemake@output[["DFclinical_full_cohort"]]
 pDFclinical_full_gliomas <-      snakemake@output[["DFclinical_full_gliomas"]]
 pDFclinical_full_inhouse <-      snakemake@output[["DFclinical_full_inhouse"]]
 # pDFclinical_full_gliomas <-      './../results/DFclinical_full_gliomas.RDS'
+pDFclinical_full_cohort_csv <-      snakemake@output[["DFclinical_full_cohort_csv"]]
 
 # # parameters
 # pinhouse <- './../../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx'
@@ -125,5 +126,10 @@ sDF_full_cohort <- sDF_full_inhouse[isentrixs_cohort,]
 
 message('saving clinical dataframe for full cohort in ', pDFclinical_full_cohort)
 saveRDS(sDF_full_cohort, file = pDFclinical_full_cohort)
+
+
+message('saving clinical dataframe as cnv for full cohort in ', pDFclinical_full_cohort_csv)
+write.csv2(sDF_full_cohort, file = pDFclinical_full_cohort_csv)
+
 
 sink()
