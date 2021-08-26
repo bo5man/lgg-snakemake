@@ -17,8 +17,8 @@ if (msg){
 
 ##################
 # input file paths
-sentrix <- '205061430055_R04C01_Grn.idat' # E17-022910:LSS22 Female
-pMset_raw <- './../../output-lgg/results/Mset/Mset_raw.RDS'
+# sentrix <- '205061430055_R04C01_Grn.idat' # E17-022910:LSS22 Female
+# pMset_raw <- './../../output-lgg/results/Mset/Mset_raw.RDS'
 sentrix <- snakemake@input[["sentrix"]]
 pMset_raw <- snakemake@input[["Mset_raw"]]
 pDFclinical_full_cohort <-  snakemake@input[["DFclinical_full_cohort"]]
@@ -59,7 +59,6 @@ load(file.path(dir_mnp,"CNV_data","CNanalysis4_conumee_REF-F.vh20150715.RData"))
 
 # read clinical data files
 DFclinical_full_cohort <- readRDS(pDFclinical_full_cohort)
-# DFclinical_full_cohort = readRDS('./../../output-lgg/results/DFclinical_full_cohort.RDS')
 
 # read raw Mset: no normalization is performed before CNV analysis 
 Mset_raw <- readRDS(pMset_raw)
@@ -91,17 +90,19 @@ x <- CNV.fit(cndata, ref.data, anno)
 x <- CNV.bin(x)
 # x <- CNV.segment(x,alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3)
 
+
 # findMethods('CNV.fit')
 # findMethods('CNV.segment')
+
 # Settings Conumee
-# x1 <- CNV.segment(y, alpha = 0.005, nperm = 50000, min.width = 5, undo.splits = "sdundo", undo.SD = 2.2, verbose = 1)
+# x <- CNV.segment(x, alpha = 0.005, nperm = 50000, min.width = 5, undo.splits = "sdundo", undo.SD = 2.2, verbose = 1)
 # # Settings DNAcopy
-# x2 <- CNV.segment(y, alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3, verbose = 1)
+# x <- CNV.segment(y, alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3, verbose = 1)
 # settings QDNAseq
 # if (bin==100) {SDundo=0.10; alph=1e-20} # default = 1e-20 # 0.01 used for PELLL_FS8_a0.01
 # QCN.fcnsds <- segmentBins(QCN.fcnsd[,QCN.fcnsd$used.reads > min_used_reads ], undo.splits='sdundo', undo.SD=SDundo, alpha=alph, transformFun="sqrt") # gives 'Performing segmentation: NA
 # thus
-# x <- CNV.segment(x, alpha = 1e-20, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 0.10, verbose = 1, transformFun='sqrt')
+# x <- CNV.segment(x, alpha = 1e-20, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 0.10, verbose = 1, transformFun='sqrt') # variance square root transformation not included
 x <- CNV.segment(x, alpha = 1e-20, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 0.10, verbose = 1)
 cnv <- x
 

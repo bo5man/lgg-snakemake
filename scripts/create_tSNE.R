@@ -136,7 +136,7 @@ message('saving tsneplot_cohort_Type in ', ptsneplot_cohort_Type)
 png(file = ptsneplot_cohort_Type, width = 1440, height = 1280) #width = 1846,height = 991
 ggplot(sDF_cohort, aes(x=X1, y=X2, col=Type)) +
     geom_point()  +
-    geom_text(data = sDF_cohort,aes(x=X1,y=X2,label=Type), show.legend = F) +
+    geom_text(data = sDF_cohort,aes(x=X1,y=X2,label=ID, col=Type), show.legend = F) +
     theme_bw() + 
     theme(legend.position = "right") +
     guides(col=guide_legend(ncol=1)) +
@@ -207,24 +207,24 @@ message('saving tsneplot_gliomas_Type in ', ptsneplot_gliomas_Type)
 png(file = ptsneplot_gliomas_Type, width = 1440, height = 1280) #width = 1846,height = 991
 ggplot(sDF_gliomas, aes(x=X1, y=X2, col=Type)) +
     geom_point()  +
-    geom_text(data = sDF_gliomas,aes(x=X1,y=X2,label=Type), show.legend = F) +
+    geom_text(data = sDF_gliomas,aes(x=X1,y=X2,label=ID, col=Type), show.legend = F) +
     theme_bw() + 
     theme(legend.position = "right") +
     guides(col=guide_legend(ncol=1)) +
-    ggtitle(paste0("t-Distributed Stochastic Neighbor Embedding(tSNE) based on the principal component analysis(pca) of all probes of the 1p/19q cohort and selected glioma samples"),
+    ggtitle(paste0("t-Distributed Stochastic Neighbor Embedding(tSNE) based on the principal component analysis(pca) of all probes of the 1p/19q cohort and selected 1p/19q inhouse samples"),
             subtitle= paste0('The number of principal components calculated for the pca is ', kpca,'. The tSNE is exact with alpha=0 and the perplexity is set to ', perp,'.')
     )
 dev.off()
 
 message('saving tsneplot_gliomas_TypeSurvival in ', ptsneplot_gliomas_TypeSurvival)
 png(file = ptsneplot_gliomas_TypeSurvival, width = 1440, height = 1280) #width = 1846,height = 991
-ggplot(sDF_gliomas, aes(x=X1, y=X2, col=TypeSurvival)) +
+ggplot(sDF_gliomas, aes(x=X1, y=X2, col=Type)) +
     geom_point()  +
     geom_text(data = sDF_gliomas,aes(x=X1,y=X2,label=TypeSurvival), show.legend = F) +
     theme_bw() + 
     theme(legend.position = "right") +
     guides(col=guide_legend(ncol=1)) +
-    ggtitle(paste0("t-Distributed Stochastic Neighbor Embedding(tSNE) based on the principal component analysis(pca) of all probes of the 1p/19q cohort and selected glioma samples"),
+    ggtitle(paste0("t-Distributed Stochastic Neighbor Embedding(tSNE) based on the principal component analysis(pca) of all probes of the 1p/19q cohort and selected 1p19q inhouse samples"),
             subtitle= paste0('The number of principal components calculated for the pca is ', kpca,'. The tSNE is exact with alpha=0 and the perplexity is set to ', perp,'.')
     )
 dev.off()
@@ -237,7 +237,7 @@ ggplot(sDF_gliomas, aes(x=X1, y=X2, col=TypeSurvival)) +
     theme_bw() + 
     theme(legend.position = "right") +
     guides(col=guide_legend(ncol=1)) +
-    ggtitle(paste0("t-Distributed Stochastic Neighbor Embedding(tSNE) based on the principal component analysis(pca) of all probes of the 1p/19q cohort and selected glioma samples"),
+    ggtitle(paste0("t-Distributed Stochastic Neighbor Embedding(tSNE) based on the principal component analysis(pca) of all probes of the 1p/19q cohort and selected 1p/19q inhouse samples"),
             subtitle= paste0('The number of principal components calculated for the pca is ', kpca,'. The tSNE is exact with alpha=0 and the perplexity is set to ', perp,'.')
     )
 dev.off()
@@ -262,6 +262,11 @@ tsne_inhouse <- Rtsne(pca_inhouse$x,pca=F,max_iter=5500,theta=0,verbose=T,perple
 message('saving tsne of inhouse and cohort in ', ptsne_inhouse)
 saveRDS(tsne_inhouse, file = ptsne_inhouse)
 
+# library(ggplot2)
+# sDF_inhouse = readRDS('./../../output-lgg-test/results/DFclinical_inhouse.RDS')
+# tsne_inhouse=readRDS('./../../output-lgg-test/results/tSNE/RDS/tsne_inhouse.RDS')
+# perp=1;kpca=1;
+
 sDF_inhouse$X1 <- tsne_inhouse$Y[,1]
 sDF_inhouse$X2 <- tsne_inhouse$Y[,2]
 
@@ -270,10 +275,10 @@ png(file = ptsneplot_inhouse_Type, width = 1440, height = 1280) #width = 1846,he
 ggplot(sDF_inhouse, aes(x=X1, y=X2, col=Type)) +
     geom_point()  +
     # geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=Type)) +
-    geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=Type, col=Type), show.legend = F) +
+    geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=ID, col=Type), show.legend = F) +
     theme_bw() + 
     theme(legend.position = "right") +
-    guides(col=guide_legend(ncol=1)) +
+    guides(col=guide_legend(ncol=2)) +
     ggtitle(paste0("t-Distributed Stochastic Neighbor Embedding(tSNE) based on the principal component analysis(pca) of all probes of the 1p/19q cohort and related inhouse samples"),
             subtitle= paste0('The number of principal components calculated for the pca is ', kpca,'. The tSNE is exact with alpha=0 and the perplexity is set to ', perp,'.')
     )
@@ -297,12 +302,12 @@ dev.off()
 
 message('saving tsneplot_inhouse_TypeSurvival in ', ptsneplot_inhouse_TypeSurvival)
 png(file = ptsneplot_inhouse_TypeSurvival, width = 1440, height = 1280) #width = 1846,height = 991
-ggplot(sDF_inhouse, aes(x=X1, y=X2, col=TypeSurvival)) +
+ggplot(sDF_inhouse, aes(x=X1, y=X2, col=Type)) +
     geom_point()  +
     geom_text(data = sDF_inhouse,aes(x=X1,y=X2,label=TypeSurvival), show.legend = F) +
     theme_bw() + 
     theme(legend.position = "right") +
-    guides(col=guide_legend(ncol=1)) +
+    guides(col=guide_legend(ncol=2)) +
     ggtitle(paste0("t-Distributed Stochastic Neighbor Embedding(tSNE) based on the principal component analysis(pca) of all probes of the 1p/19q cohort and related inhouse samples"),
             subtitle= paste0('The number of principal components calculated for the pca is ', kpca,'. The tSNE is exact with alpha=0 and the perplexity is set to ', perp,'.')
     )

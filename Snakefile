@@ -76,6 +76,7 @@ rule all: #uncomment which branch you want for testing
         DFclinical_full_gliomas =   DIR_OUT + 'DFclinical_full_gliomas.RDS',    # create_clinicalDF
         DFclinical_full_inhouse =   DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
         DFclinical_full_cohort_csv =    DIR_OUT + 'DFclinical_full_cohort.csv',     # create_clinicalDF
+        DFclinical_full_inhouse_csv =    DIR_OUT + 'DFclinical_full_inhouse.csv',     # create_clinicalDF
         ##### create untill check_QC  #####
         qcMset_full_cohort =            DIR_QC + 'qcMset_full_cohort.RDS',                  # create_QC
         qcplotMset_full_cohort =        DIR_QC + 'qcplotMset_full_cohort.png',              # create_QC
@@ -84,6 +85,7 @@ rule all: #uncomment which branch you want for testing
         DFclinical_gliomas =    DIR_OUT + 'DFclinical_gliomas.RDS', # check_QC
         DFclinical_inhouse =    DIR_OUT + 'DFclinical_inhouse.RDS', # check_QC
         DFclinical_cohort_csv = DIR_OUT + 'DFclinical_cohort.csv',     # check_QC
+        DFclinical_inhouse_csv =    DIR_OUT + 'DFclinical_inhouse.csv',     # check_QC
         betas_cohort =      DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
         betas_gliomas =     DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
         betas_inhouse =     DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
@@ -242,6 +244,7 @@ rule create_clinicalDF:
         DFclinical_full_inhouse =   DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
         # DFclinical_full_inhouse =   report(DIR_OUT + 'DFclinical_full_inhouse.RDS', category="Clinical data sets", subcategory="full data set")    # create_clinicalDF
         DFclinical_full_cohort_csv =    report(DIR_OUT + 'DFclinical_full_cohort.csv', category="Clinical data sets", subcategory="full data set"),     # create_clinicalDF
+        DFclinical_full_inhouse_csv =    report(DIR_OUT + 'DFclinical_full_inhouse.csv', category="Clinical data sets", subcategory="full inhouse data set"),     # create_clinicalDF
     params:
         dir_betas = DIR_BETAS,
         dir_mnp = DIR_MNP,
@@ -270,6 +273,7 @@ rule check_QC:
         DFclinical_gliomas =            DIR_OUT + 'DFclinical_gliomas.RDS', # check_QC
         DFclinical_inhouse =            DIR_OUT + 'DFclinical_inhouse.RDS', # check_QC
         DFclinical_cohort_csv =    report(DIR_OUT + 'DFclinical_cohort.csv', category="Clinical data sets", subcategory="Quality Controled data set"),     # check_QC
+        DFclinical_inhouse_csv =    report(DIR_OUT + 'DFclinical_inhouse.csv', category="Clinical data sets", subcategory="Quality Controled data set of inhouse sample"),     # check_QC
         # DFclinical_inhouse =            report(DIR_OUT + 'DFclinical_inhouse.RDS', category="Clinical data sets", subcategory="Quality Controled data set"), # check_QC
         betas_cohort =                  DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
         betas_gliomas =                 DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
@@ -289,10 +293,10 @@ rule create_tSNE:
     input:
         betas_cohort =          DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
         betas_gliomas =         DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
-        betas_inhouse =         DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
+        betas_inhouse =         DIR_BETAS + 'betas_full_inhouse.RDS',            # check_QC 
         DFclinical_cohort =     DIR_OUT + 'DFclinical_cohort.RDS',# create_clinicalDF
         DFclinical_gliomas =    DIR_OUT + 'DFclinical_gliomas.RDS',    # create_clinicalDF
-        DFclinical_inhouse =    DIR_OUT + 'DFclinical_inhouse.RDS',    # create_clinicalDF
+        DFclinical_inhouse =    DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
     output:
         pca_cohort =        DIR_PCA + 'pca_cohort.RDS',            # create_tSNE
         pca_gliomas =       DIR_PCA + 'pca_gliomas.RDS',    # create_tSNE

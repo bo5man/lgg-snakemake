@@ -35,6 +35,7 @@ pDFclinical_full_gliomas <-      snakemake@output[["DFclinical_full_gliomas"]]
 pDFclinical_full_inhouse <-      snakemake@output[["DFclinical_full_inhouse"]]
 # pDFclinical_full_gliomas <-      './../results/DFclinical_full_gliomas.RDS'
 pDFclinical_full_cohort_csv <-      snakemake@output[["DFclinical_full_cohort_csv"]]
+pDFclinical_full_inhouse_csv <-      snakemake@output[["DFclinical_full_inhouse_csv"]]
 
 # # parameters
 # pinhouse <- './../../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx'
@@ -62,42 +63,45 @@ inhouse_full <- read.xlsx(pinhouse, sep = "_")
 cohort_full <- read.xlsx(pcohort, sep = '_')
 
 # # # select inhouse data and full cohort data and create data frame sDF_inhouse
-inhouse <- inhouse_full[,c('Sentrix_ID', 'Methylatie_array_uitkomst_schoon')]
+inhouse <- inhouse_full[,c('Sentrix_ID', 'Methylatie_array_uitkomst_schoon', 'Classifier_methylation_subclass_(only_for_predicted_methylation_class_families,_cut-off_0.5)_schoon')]
 # # # select cohort data
 # cohort <- cohort_full[,c('Sample_ID_Long_vs_Short_Survivor_(LSS)','SENTRIX_ID','Sufficient_DNA_and_paid_for', 'Shallow_Sequencing_Result', 'long_or_short_(>100_months_-_<40_months)', 'Sex_(M/F)')]
 cohort <- cohort_full[!is.na(cohort_full$SENTRIX_ID),c('Sample_ID_Long_vs_Short_Survivor_(LSS)','SENTRIX_ID','Sufficient_DNA_and_paid_for', 'Methylation_subclasses', 'long_or_short_(>100_months_-_<40_months)', 'Sex_(M/F)')]
 
-SelectedGliomas <- unique(str_subset(inhouse$Methylatie_array_uitkomst_schoon, 'Low Grade Glioma|1p/19q'))
+Selected1p19q <- unique(str_subset(inhouse$`Classifier_methylation_subclass_(only_for_predicted_methylation_class_families,_cut-off_0.5)_schoon`, '1p/19q'))
 
 iFullCohort <- seq_along(cohort$SENTRIX_ID)
-iSelectedGliomas <- which(inhouse$Methylatie_array_uitkomst_schoon %in% SelectedGliomas)
-iOtherSelectedGliomas <- setdiff(seq_along(inhouse$Methylatie_array_uitkomst_schoon), iSelectedGliomas)
+iSelected1p19q <- which(inhouse$`Classifier_methylation_subclass_(only_for_predicted_methylation_class_families,_cut-off_0.5)_schoon` %in% Selected1p19q)
+iOtherSelectedGliomas <- setdiff(seq_along(inhouse$`Classifier_methylation_subclass_(only_for_predicted_methylation_class_families,_cut-off_0.5)_schoon`), iSelected1p19q)
 
 
 sDF_full_inhouse <- data.frame(
                          ID = c(cohort$`Sample_ID_Long_vs_Short_Survivor_(LSS)`[iFullCohort],
-                                 paste0('SG', seq_along(inhouse$Methylatie_array_uitkomst_schoon[iSelectedGliomas])),
+                                 paste0('1p19qI', seq_along(inhouse$Methylatie_array_uitkomst_schoon[iSelected1p19q])),
                                  paste0('OG', seq_along(inhouse$Methylatie_array_uitkomst_schoon[iOtherSelectedGliomas]))
                                  ),
                          Cohort_ID = c(rep('FullCohort',length(cohort$SENTRIX_ID[iFullCohort])),
-                                 rep('SelectedGliomas',length(inhouse$Sentrix_ID[iSelectedGliomas])),
+                                 rep('Selected1p19q',length(inhouse$Sentrix_ID[iSelected1p19q])),
                                  rep('OtherSelectedGliomas',length(inhouse$Sentrix_ID[iOtherSelectedGliomas]))
                                  ),
                          Sentrix_ID = c(cohort$SENTRIX_ID[iFullCohort],
-                                 inhouse$Sentrix_ID[iSelectedGliomas],
+                                 inhouse$Sentrix_ID[iSelected1p19q],
                                  inhouse$Sentrix_ID[iOtherSelectedGliomas]
                                  ),
                          Type = c(cohort$Methylation_subclasses[iFullCohort],
-                                 inhouse$Methylatie_array_uitkomst_schoon[iSelectedGliomas],
-                                 inhouse$Methylatie_array_uitkomst_schoon[iOtherSelectedGliomas]
+                                 ifelse(is.na(inhouse[iSelected1p19q,3]), inhouse[iSelected1p19q,2], paste(inhouse[iSelected1p19q,2],inhouse[iSelected1p19q,3], sep=', ')),
+                                 ifelse(is.na(inhouse[iOtherSelectedGliomas,3]), inhouse[iOtherSelectedGliomas,2], paste(inhouse[iOtherSelectedGliomas,2],inhouse[iOtherSelectedGliomas,3], sep=', '))
                                  ),
-                         TypeSurvival = c(cohort$`long_or_short_(>100_months_-_<40_months)`[iFullCohort],
-                                 inhouse$Methylatie_array_uitkomst_schoon[iSelectedGliomas],
-                                 inhouse$Methylatie_array_uitkomst_schoon[iOtherSelectedGliomas]
+#                                  inhouse$Methylatie_array_uitkomst_schoon[iSelected1p19q],
+#                                  inhouse$Methylatie_array_uitkomst_schoon[iOtherSelectedGliomas]
+#                                  ),
+                         TypeSurvival = c(paste('cohort', cohort$`long_or_short_(>100_months_-_<40_months)`[iFullCohort], 'survivor'),
+                                 rep('Selected1p19q',length(inhouse$Sentrix_ID[iSelected1p19q])),
+                                 rep('OtherSelectedGliomas',length(inhouse$Sentrix_ID[iOtherSelectedGliomas]))
                                  ),
                          SexType = c(cohort$`Sex_(M/F)`[iFullCohort],
-                                 inhouse$Methylatie_array_uitkomst_schoon[iSelectedGliomas],
-                                 inhouse$Methylatie_array_uitkomst_schoon[iOtherSelectedGliomas]
+                                 rep('Selected1p19q',length(inhouse$Sentrix_ID[iSelected1p19q])),
+                                 rep('OtherSelectedGliomas',length(inhouse$Sentrix_ID[iOtherSelectedGliomas]))
                                  )
 )
 rownames(sDF_full_inhouse) <- sDF_full_inhouse$Sentrix_ID
@@ -109,10 +113,13 @@ sDF_full_inhouse <- sDF_full_inhouse[sDF_full_inhouse$Sentrix_ID %in% sentrixs_f
 message('saving clinical dataframe for full inhouse and full cohort in ', pDFclinical_full_inhouse)
 saveRDS(sDF_full_inhouse, file = pDFclinical_full_inhouse)
 
+message('saving clinical dataframe as cnv for for inhouse and full cohort in ', pDFclinical_full_inhouse_csv)
+write.csv2(sDF_full_inhouse, file = pDFclinical_full_inhouse_csv)
 
-# # select full cohort and gliomas inhouse
 
-isentrixs_full_gliomas <- which(sDF_full_inhouse$Cohort_ID %in% c('FullCohort', 'SelectedGliomas')) 
+# # select full cohort and 1p19q inhouse
+
+isentrixs_full_gliomas <- which(sDF_full_inhouse$Cohort_ID %in% c('FullCohort', 'Selected1p19q')) 
 sDF_full_gliomas <- sDF_full_inhouse[isentrixs_full_gliomas,]
 
 message('saving clinical dataframe for full gliomas and full cohort in ', pDFclinical_full_gliomas)
