@@ -31,9 +31,7 @@ if (msg){
 
 ##################
 # # # input file paths
-pbetas <- snakemake@input[["betas_cohort"]]
-pbetas_gliomas <- snakemake@input[["betas_gliomas"]]
-pbetas_inhouse <- snakemake@input[["betas_inhouse"]]
+pbetas <- snakemake@input[["betas"]]
 pDFclinical_cohort <-        snakemake@input[["DFclinical_cohort"]]
 pDFclinical_gliomas <-      snakemake@input[["DFclinical_gliomas"]]
 pDFclinical_inhouse <-      snakemake@input[["DFclinical_inhouse"]]
@@ -154,11 +152,11 @@ sink(log, append=T, split=FALSE, type='message')
 
 # # # Read input
 betas <- readRDS(pbetas)
-betas_gliomas <- readRDS(pbetas_gliomas)
-betas_inhouse <- readRDS(pbetas_inhouse)
 DFclinical_cohort <- readRDS(pDFclinical_cohort)
 DFclinical_gliomas <- readRDS(pDFclinical_gliomas)
 DFclinical_inhouse <- readRDS(pDFclinical_inhouse)
+
+
 
 
 # # # select probes gCIMP
@@ -168,17 +166,17 @@ cgs1 <- read.xlsx(pprobeset_gCIMP)
 cgs1 <- cgs1[,1]
 
 # # # define betas for full cohort and gCIMP probes
-betas_probes7_cohort <- betas[,cgs1]
+betas_probes7_cohort <- betas[rownames(DFclinical_cohort),cgs1]
 message('saving betas for full cohort and gCIMP probes in ', pBetas_gCIMP)
 saveRDS(betas_probes7_cohort, file = pBetas_gCIMP)
 
 # # # define betas for short cohort and gCIMP probes
-betas_probes7_cohort_short <- betas_probes7_cohort[DFclinical_cohort$TypeSurvival=='short',]
+betas_probes7_cohort_short <- betas_probes7_cohort[DFclinical_cohort$TypeSurvival=='short survivor',]
 message('saving betas for short cohort and gCIMP probes in ', pBetas_gCIMP_short)
 saveRDS(betas_probes7_cohort_short, file = pBetas_gCIMP_short)
 
 # # # define betas for long cohort and gCIMP probes
-betas_probes7_cohort_long <- betas_probes7_cohort[DFclinical_cohort$TypeSurvival=='long',]
+betas_probes7_cohort_long <- betas_probes7_cohort[DFclinical_cohort$TypeSurvival=='long survivor',]
 message('saving betas for long cohort and gCIMP probes in ', pBetas_gCIMP_long)
 saveRDS(betas_probes7_cohort_long, file = pBetas_gCIMP_long)
 
@@ -210,7 +208,7 @@ fclus <- function(x) hclust(x,method= "ward.D2")
 
 colAnn <- colorpanel(2,low="red",high="green")
 # DFclinical_cohort = DFclinical_cohort[setdiff(rownames(DFclinical_cohort),'205061430022_R06C01'),]
-DFclinical_cohort$colAnn <- ifelse(DFclinical_cohort$TypeSurvival == 'short', colAnn[1], colAnn[2])
+DFclinical_cohort$colAnn <- ifelse(DFclinical_cohort$TypeSurvival == 'short survivor', colAnn[1], colAnn[2])
 
 # # make heatmap for betas
 # order heatmap as in gCIMP figure 5A
@@ -323,12 +321,12 @@ message('saving betas for full cohort and treatment related probes in ', pBetas_
 saveRDS(betas_probes620_cohort, file = pBetas_glass_treatment_related_620probes)
 
 # # # define betas for short cohort and treatment related probes
-betas_probes620_cohort_short <- betas_probes620_cohort[DFclinical_cohort$TypeSurvival=='short',]
+betas_probes620_cohort_short <- betas_probes620_cohort[DFclinical_cohort$TypeSurvival=='short survivor',]
 message('saving betas for short cohort and treatment related probes in ', pBetas_glass_treatment_related_620probes_short)
 saveRDS(betas_probes620_cohort_short, file = pBetas_glass_treatment_related_620probes_short)
 
 # # # define betas for long cohort and treatment related probes
-betas_probes620_cohort_long <- betas_probes620_cohort[DFclinical_cohort$TypeSurvival=='long',]
+betas_probes620_cohort_long <- betas_probes620_cohort[DFclinical_cohort$TypeSurvival=='long survivor',]
 message('saving betas for long cohort and treatment related probes in ', pBetas_glass_treatment_related_620probes_long)
 saveRDS(betas_probes620_cohort_long, file = pBetas_glass_treatment_related_620probes_long)
 
@@ -416,12 +414,12 @@ message('saving betas for full cohort and hypermodulator probes in ', pBetas_gla
 saveRDS(betas_probes342_cohort, file = pBetas_glass_hypermodulator_342probes)
 
 # # # define betas for short cohort and hypermodulator probes
-betas_probes342_cohort_short <- betas_probes342_cohort[DFclinical_cohort$TypeSurvival=='short',]
+betas_probes342_cohort_short <- betas_probes342_cohort[DFclinical_cohort$TypeSurvival=='short survivor',]
 message('saving betas for short cohort and hypermodulator probes in ', pBetas_glass_hypermodulator_342probes_short)
 saveRDS(betas_probes342_cohort_short, file = pBetas_glass_hypermodulator_342probes_short)
 
 # # # define betas for long cohort and hypermodulator probes
-betas_probes342_cohort_long <- betas_probes342_cohort[DFclinical_cohort$TypeSurvival=='long',]
+betas_probes342_cohort_long <- betas_probes342_cohort[DFclinical_cohort$TypeSurvival=='long survivor',]
 message('saving betas for long cohort and hypermodulator probes in ', pBetas_glass_hypermodulator_342probes_long)
 saveRDS(betas_probes342_cohort_long, file = pBetas_glass_hypermodulator_342probes_long)
 

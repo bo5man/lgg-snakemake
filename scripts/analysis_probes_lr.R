@@ -130,7 +130,7 @@ betas <- betas[setdiff(rownames(betas),'205061430022_R06C01'),]
 
 # # final features for prediction!
 features <- scale(deskew(delete_constant_features(betas), 1))
-outcome <- factor(longshort$TypeSurvival, levels = c('long', 'short'))
+outcome <- factor(longshort$TypeSurvival, levels = c('long survivor', 'short survivor'))
 DF_cohort <- data.frame(outcome, features)
 
 message('saving dataframe containing outcome and features for cohort with gCIMP probes for linear regression in ', pDFfeatures_gCIMP)
@@ -214,7 +214,7 @@ betas <- betas[setdiff(rownames(betas),'205061430022_R06C01'),]
 
 # # final features for prediction!
 features <- scale(deskew(delete_constant_features(betas), 1))
-outcome <- factor(longshort$TypeSurvival, levels = c('long', 'short'))
+outcome <- factor(longshort$TypeSurvival, levels = c('long survivor', 'short survivor'))
 DF_cohort <- data.frame(outcome, features)
 
 message('saving dataframe containing outcome and features for cohort with glass treatment related probes for linear regression in ', pDFfeatures_glass_treatment_related)

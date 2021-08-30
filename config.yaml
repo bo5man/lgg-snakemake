@@ -1,8 +1,8 @@
 paths:
     all_idats: '../LGG_Methylation/data/allsamples/' # directory to all methylation idat-files, correspondents to data/allsamples/ in README, string
     full_cohort: '/net/nfs/PAT/archive/MPS-402/methylation/' # path to directory of methylation idat-files of full cohort, correspondents to data/fullcohort/ in README, used to identify all samples in the full cohort, also used to create only CNV-plots of full cohort samples, string
-    out: '../output-lgg-test/results/' # directory of all output directory and files, string
-    log: '../output-lgg-test/log/' # directory of the log files, string
+    out: '../output-lgg/results/' # directory of all output directory and files, string
+    log: '../output-lgg/log/' # directory of the log files, string
     mnp: '../LGG_Methylation/mnp_training/' # directory of the cloned Github Repository of Heidelberg, string
     overview: '../LGG_Methylation/Overview_oligodendroglioma_samples_long_vs_short_PFS.xlsx' # path of clinical data of full cohort, string, assumed .xlsx
     inhouse: '../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx' # path to clinical data of inhouse, string, assumed .xlsx

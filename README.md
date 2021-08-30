@@ -131,11 +131,18 @@ snakemake -n
 
 Check the rules that are planned to be performed, conform the rule-graph.
 
-A visualization of the order of rules to be performed can be viewed by running the following command and opening the DAG-file
+A visualization of the order of rules to be performed can be viewed by running the following command and displaying the rule-graph
+
+```
+snakemake --forceall --rulegraph | dot | display
+```
+or saving the rule-graph in an .svg-file
 
 ```
 snakemake --forceall --rulegraph | dot -Tsvg > DAG.svg
 ```
+and opening the DAG-file in a browser.
+
 
 When ready, run the analysis
 
@@ -156,5 +163,8 @@ Useful snakemake options
 `-R , --forcerun` : Force the re-execution or creation of the given rules or files. Use this option if you changed a rule and want to have all its output in your workflow updated. Example `-R create_clinicalDF`
 
 `-U , --until` : Runs the pipeline until it reaches the specified rules or files. Only runs jobs that are dependencies of the specified rule or files, does not run sibling DAGs. Example `-U analysis_probes`
+
+`--report` : After running the pipeline, a report can be created which gathers statistics and results in a user-specied path. Example `--report ../lgg-snakemake/report-lgg.html`
+
 
 for all options go to https://snakemake.readthedocs.io/en/v6.4.1/executing/cli.html#all-options

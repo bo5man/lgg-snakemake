@@ -57,13 +57,13 @@ SENTRIXS_COHORT = getfullcohortsentrixs()
 
 rule all: #uncomment which branch you want for testing
     input:
-        ##### create untill create_singles #####
-        RGsets =     expand(DIR_RGSET_SINGLES + '{sentrix}_RGset.RDS', sentrix = SENTRIXS.keys()),                # create_singles
-        Msets =      expand(DIR_MSET_SINGLES + '{sentrix}_Mset.RDS', sentrix = SENTRIXS.keys()),                  # create_singles
-        Msets_mnp =  expand(DIR_MSET_SINGLES + '{sentrix}_Mset_mnp_filtered.RDS', sentrix = SENTRIXS.keys()),     # create_singles
-        Msets_raw =  expand(DIR_MSET_SINGLES + '{sentrix}_Mset_raw.RDS', sentrix = SENTRIXS.keys()),              # create_singles
-        Msets_noob = expand(DIR_MSET_SINGLES + '{sentrix}_Mset_noob.RDS', sentrix = SENTRIXS.keys()),             # create_singles
-        ##### create until rule create_betas  #####
+        ###### create untill create_singles #####
+        #RGsets =     expand(DIR_RGSET_SINGLES + '{sentrix}_RGset.RDS', sentrix = SENTRIXS.keys()),                # create_singles
+        #Msets =      expand(DIR_MSET_SINGLES + '{sentrix}_Mset.RDS', sentrix = SENTRIXS.keys()),                  # create_singles
+        #Msets_mnp =  expand(DIR_MSET_SINGLES + '{sentrix}_Mset_mnp_filtered.RDS', sentrix = SENTRIXS.keys()),     # create_singles
+        #Msets_raw =  expand(DIR_MSET_SINGLES + '{sentrix}_Mset_raw.RDS', sentrix = SENTRIXS.keys()),              # create_singles
+        #Msets_noob = expand(DIR_MSET_SINGLES + '{sentrix}_Mset_noob.RDS', sentrix = SENTRIXS.keys()),             # create_singles
+        ###### create until rule create_betas  #####
         RGset  = DIR_RGSET + 'RGset.RDS',                             # create_RGset
         Mset  = DIR_MSET + 'Mset.RDS',                             # create_Msets
         Mset_mnp_filtered  = DIR_MSET + 'Mset_mnp_filtered.RDS',   # create_Msets
@@ -312,7 +312,7 @@ rule create_tSNE:
         #tsne_inhouse =              DIR_RDS + 'tsne_inhouse.RDS',       # create_tSNE
         #tsne_cohort =               report(DIR_RDS + 'tsne_cohort.RDS', category="tSNE", subcategory="cohort"),   # create_tSNE
         #tsne_gliomas =              report(DIR_RDS + 'tsne_gliomas.RDS', category="tSNE", subcategory="cohort and gliomas"),       # create_tSNE
-        tsne_inhouse =              report(DIR_RDS + 'tsne_inhouse.RDS', category="tSNE", subcategory="cohort and inhouse"),       # create_tSNE
+        tsne_inhouse =              DIR_RDS + 'tsne_inhouse.RDS',       # create_tSNE
         #tsneplot_cohort_Type =              report(DIR_TSNE + 'tsneplot_cohort_Type.png', category="tSNE", subcategory="cohort"),         # create_tSNE
         #tsneplot_cohort_TypeSurvival =      report(DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', category="tSNE", subcategory="cohort"), # create_tSNE
         #tsneplot_cohort_ID =                report(DIR_TSNE + 'tsneplot_cohort_ID.png', category="tSNE", subcategory="cohort"),          # create_tSNE
@@ -363,9 +363,7 @@ rule create_CNVplot:
 
 rule analysis_probes:
     input:
-        betas_cohort = DIR_BETAS + 'betas_cohort.RDS',    # create_tSNE
-        betas_gliomas =     DIR_BETAS + 'betas_gliomas.RDS',    # create_tSNE
-        betas_inhouse =     DIR_BETAS + 'betas_inhouse.RDS',    # create_tSNE
+        betas   = DIR_BETAS + 'betas.RDS',                            # create_betas
         DFclinical_cohort =    DIR_OUT + 'DFclinical_cohort.RDS',    # create_tSNE
         DFclinical_gliomas =        DIR_OUT + 'DFclinical_gliomas.RDS',    # create_tSNE
         DFclinical_inhouse =        DIR_OUT + 'DFclinical_inhouse.RDS',    # create_tSNE
