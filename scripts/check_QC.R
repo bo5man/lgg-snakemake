@@ -16,14 +16,13 @@ if (msg){
 
 ##################
 # input file paths
-sentrixs_full_cohort <- snakemake@input[['sentrix']]
-pRGset <- snakemake@input[["RGset"]]
-pMset <- snakemake@input[["Mset"]]
-pBetas <- snakemake@input[["betas"]]
+# sentrixs_full_cohort <- snakemake@input[['sentrix']]
+# pRGset <- snakemake@input[["RGset"]]
+pMset_full <- snakemake@input[["Mset_full"]]
+pBetas_full <- snakemake@input[["betas_full"]]
 pDFclinical_full_cohort <- snakemake@input[['DFclinical_full_cohort']]
 pDFclinical_full_gliomas <- snakemake@input[['DFclinical_full_gliomas']]
 pDFclinical_full_inhouse <- snakemake@input[['DFclinical_full_inhouse']]
-# sentrixs_full_cohort = list.files(path='./../../LGG_Methylation/data/utrecht_methy/', pattern='*_Grn.idat')
 
 # output file paths
 pqcMset_full_cohort <- snakemake@output[["qcMset_full_cohort"]]
@@ -54,25 +53,23 @@ sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # # # read input
-RGset <- readRDS(pRGset)
-Mset <- readRDS(pMset)
-betas <- readRDS(pBetas)
+# RGset <- readRDS(pRGset)
+Mset_full <- readRDS(pMset_full)
+betas_full <- readRDS(pBetas_full)
 DFclinical_full_cohort <- readRDS(pDFclinical_full_cohort)
 DFclinical_full_gliomas <- readRDS(pDFclinical_full_gliomas)
 DFclinical_full_inhouse <- readRDS(pDFclinical_full_inhouse)
 
-# # # filter RGset and Mset on full cohort samples
-sentrixs_full_cohort <- gsub(dir_full_cohort, '', sentrixs_full_cohort)
-sentrixs_full_cohort <- gsub('_Grn.idat', '', sentrixs_full_cohort)
-RGset_full_cohort <- RGset[,sentrixs_full_cohort]
-Mset_full_cohort <- Mset[,sentrixs_full_cohort]
+Mset_full_cohort <- Mset_full[,rownames(DFclinical_full_cohort)]
+betas_full_cohort <- betas_full[rownames(DFclinical_full_inhouse),]
+
 
 # # # QC for Mset
 qcMset_full_cohort <- minfiQC(Mset_full_cohort, verbose=T)
 message('saving quality control of Mset of cohort samples in ', pqcMset_full_cohort)
 saveRDS(qcMset_full_cohort, file = pqcMset_full_cohort)
 
-qc = qcMset_full_cohort$qc
+qc <- qcMset_full_cohort$qc
 #plotQC
 #?plotQC
 badSampleCutoff <- 12
@@ -158,8 +155,8 @@ write.csv2(DFclinical_inhouse, file = pDFclinical_inhouse_csv)
 
 # # define betas for cohort
 
-i <- intersect(rownames(DFclinical_cohort),rownames(betas))
-betas_cohort <- betas[i,]
+i <- intersect(rownames(DFclinical_cohort),rownames(betas_full))
+betas_cohort <- betas_full[i,]
 
 message('saving betas for good samples of cohort in ', pBetas_cohort)
 saveRDS(betas_cohort, file = pBetas_cohort)
@@ -167,16 +164,16 @@ saveRDS(betas_cohort, file = pBetas_cohort)
 
 # # define betas for cohort and gliomas
 
-i <- intersect(rownames(DFclinical_gliomas),rownames(betas))
-betas_gliomas <- betas[i,]
+i <- intersect(rownames(DFclinical_gliomas),rownames(betas_full))
+betas_gliomas <- betas_full[i,]
 
 message('saving betas for good samples of cohort and gliomas in ', pBetas_gliomas)
 saveRDS(betas_gliomas, file = pBetas_gliomas)
 
 # # define betas for cohort and inhouse
 
-i <- intersect(rownames(DFclinical_inhouse),rownames(betas))
-betas_inhouse <- betas[i,]
+i <- intersect(rownames(DFclinical_inhouse),rownames(betas_full))
+betas_inhouse <- betas_full[i,]
 
 message('saving betas for good samples of cohort and inhouse in ', pBetas_inhouse)
 saveRDS(betas_inhouse, file = pBetas_inhouse)

@@ -92,17 +92,26 @@ x <- CNV.bin(x)
 
 
 # findMethods('CNV.fit')
-# findMethods('CNV.segment')
 
-# Settings Conumee
-# x <- CNV.segment(x, alpha = 0.005, nperm = 50000, min.width = 5, undo.splits = "sdundo", undo.SD = 2.2, verbose = 1)
+# # Settings Conumee
+# findMethods('CNV.segment')
+# x <- CNV.segment(x, alpha = 0.001, nperm = 50000, min.width = 5, undo.splits = "sdundo", undo.SD = 2.2, verbose = 0)
+#
 # # Settings DNAcopy
+# DNAcopy::segment
 # x <- CNV.segment(y, alpha = 0.01, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 3, verbose = 1)
-# settings QDNAseq
+#
+# # settings QDNAseq
+# https://github.com/tgac-vumc/QDNAseq.snakemake/blob/master/scripts/Run_QDNAseq_segment.R
+# ...
+# # Adjust segmentation settings based on binsize
 # if (bin==100) {SDundo=0.10; alph=1e-20} # default = 1e-20 # 0.01 used for PELLL_FS8_a0.01
+# ...
 # QCN.fcnsds <- segmentBins(QCN.fcnsd[,QCN.fcnsd$used.reads > min_used_reads ], undo.splits='sdundo', undo.SD=SDundo, alpha=alph, transformFun="sqrt") # gives 'Performing segmentation: NA
-# thus
-# x <- CNV.segment(x, alpha = 1e-20, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 0.10, verbose = 1, transformFun='sqrt') # variance square root transformation not included
+#
+# thus we want to use the following settings assuming 100kbp binsize
+# x <- CNV.segment(x, alpha = 1e-20, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 0.10, verbose = 1, transformFun='sqrt')
+# variance square root transformation and filtering on minimal reads not included
 x <- CNV.segment(x, alpha = 1e-20, nperm = 10000, min.width = 2, undo.splits = "sdundo", undo.SD = 0.10, verbose = 1)
 cnv <- x
 
@@ -111,7 +120,7 @@ cnv <- x
 message('saving cnv in ', pcnv)
 saveRDS(cnv, file = pcnv)
 
-
+# # # NOT RUN
 # sentrix <- sentrix
 # sMset <- Mset_raw[,sentrix]
 # cnsentrix <- CNV.load(sMset)
@@ -131,6 +140,8 @@ saveRDS(cnv, file = pcnv)
 # # refMset <- mapToGenome(refMset)
 # 
 # x <- CNV.fit(cnsentrix, cnref, anno)
+# # #
+
 
 Sentrix_ID <- sentrix
 # FullSample <- DFclinical_full_cohort$FullSample[DFclinical_full_cohort$Sentrix_ID == sentrix]
@@ -147,20 +158,11 @@ CNV.genomeplot(cnv, chrY=FALSE, chrX=FALSE, ylim=c(-1.5,1.5),
                #                pointcex=1.5, pointpch=16,
                main = paste('Sentrix:', Sentrix_ID,
                             #                             ', Full Sample Name:',FullSample,
-                            ', LSS_ID:', LSS,
+                            ', ID:', LSS,
                             ', TypeSurvival:', TypeSurvival
                )
 )
 dev.off()
-
-
-# make QDNAseq usable
-# q  = readRDS('./../../output-CGH/100kbp/data/100kbp-segmented.rds')
-# names(attributes(q))
-# attributes(q)
-# pData(attributes(q)$phenoData)
-# attributes(q)$annotation
-# attributes(q)
 
 
 sink()

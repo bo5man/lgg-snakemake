@@ -90,21 +90,22 @@ rule all: #uncomment which branch you want for testing
         betas_gliomas =     DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
         betas_inhouse =     DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
         ##### create untill tSNE  #####
-        pca_cohort =   DIR_PCA + 'pca_cohort.RDS',            # create_tSNE
-        pca_gliomas =       DIR_PCA + 'pca_gliomas.RDS',    # create_tSNE
+        #pca_cohort =   DIR_PCA + 'pca_cohort.RDS',            # create_tSNE
+        #pca_gliomas =       DIR_PCA + 'pca_gliomas.RDS',    # create_tSNE
         pca_inhouse =       DIR_PCA + 'pca_inhouse.RDS',    # create_tSNE
-        tsne_cohort =          DIR_RDS + 'tsne_cohort.RDS',   # create_tSNE
-        tsne_gliomas =              DIR_RDS + 'tsne_gliomas.RDS',       # create_tSNE
+        #tsne_cohort =          DIR_RDS + 'tsne_cohort.RDS',   # create_tSNE
+        #tsne_gliomas =              DIR_RDS + 'tsne_gliomas.RDS',       # create_tSNE
         tsne_inhouse =              DIR_RDS + 'tsne_inhouse.RDS',       # create_tSNE
-        tsneplot_cohort_Type =             DIR_TSNE + 'tsneplot_cohort_Type.png',         # create_tSNE
-        tsneplot_cohort_TypeSurvival =     DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', # create_tSNE
-        tsneplot_cohort_ID =              DIR_TSNE + 'tsneplot_cohort_ID.png',          # create_tSNE
-        tsneplot_gliomas_Type =                 DIR_TSNE + 'tsneplot_gliomas_Type.png',             # create_tSNE
-        tsneplot_gliomas_TypeSurvival =         DIR_TSNE + 'tsneplot_gliomas_TypeSurvival.png',     # create_tSNE
-        tsneplot_gliomas_ID =                  DIR_TSNE + 'tsneplot_gliomas_ID.png',              # create_tSNE
+        #tsneplot_cohort_Type =             DIR_TSNE + 'tsneplot_cohort_Type.png',         # create_tSNE
+        #tsneplot_cohort_TypeSurvival =     DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', # create_tSNE
+        #tsneplot_cohort_ID =              DIR_TSNE + 'tsneplot_cohort_ID.png',          # create_tSNE
+        #tsneplot_gliomas_Type =                 DIR_TSNE + 'tsneplot_gliomas_Type.png',             # create_tSNE
+        #tsneplot_gliomas_TypeSurvival =         DIR_TSNE + 'tsneplot_gliomas_TypeSurvival.png',     # create_tSNE
+        #tsneplot_gliomas_ID =                  DIR_TSNE + 'tsneplot_gliomas_ID.png',              # create_tSNE
         tsneplot_inhouse_Type =                 DIR_TSNE + 'tsneplot_inhouse_Type.png',             # create_tSNE
         tsneplot_inhouse_TypeSurvival =         DIR_TSNE + 'tsneplot_inhouse_TypeSurvival.png',     # create_tSNE
         tsneplot_inhouse_ID =                  DIR_TSNE + 'tsneplot_inhouse_ID.png',              # create_tSNE
+        tsneplot_inhouse_BadSample =                  DIR_TSNE + 'tsneplot_inhouse_BadSample.png',              # create_tSNE
         ####### CNV branch #####
         cnv = expand(DIR_CNV_RDS + '{sentrix_cohort}_cnv.RDS', sentrix_cohort = SENTRIXS_COHORT.keys()),                            # create_CNVplot
         cnvplot = expand(DIR_CNV + '{sentrix_cohort}_cnv.png', sentrix_cohort = SENTRIXS_COHORT.keys()),                            # create_CNVplot
@@ -237,7 +238,8 @@ rule create_singles:
 rule create_clinicalDF:
     input:
         #sentrix  = expand(DIR_FULL_COHORT + '{sentrix_cohort}_Grn.idat', sentrix_cohort=SENTRIXS_COHORT.keys()),
-        betas   = DIR_BETAS + 'betas.RDS',                            # create_betas
+        Mset   = DIR_MSET + 'Mset_mnp_filtered.RDS',                            # create_Mset
+        betas   = DIR_BETAS + 'betas_mnp_filtered.RDS',                            # create_betas
     output:
         DFclinical_full_cohort =    DIR_OUT + 'DFclinical_full_cohort.RDS',     # create_clinicalDF
         DFclinical_full_gliomas =   DIR_OUT + 'DFclinical_full_gliomas.RDS',    # create_clinicalDF
@@ -245,6 +247,8 @@ rule create_clinicalDF:
         # DFclinical_full_inhouse =   report(DIR_OUT + 'DFclinical_full_inhouse.RDS', category="Clinical data sets", subcategory="full data set")    # create_clinicalDF
         DFclinical_full_cohort_csv =    report(DIR_OUT + 'DFclinical_full_cohort.csv', category="Clinical data sets", subcategory="full data set"),     # create_clinicalDF
         DFclinical_full_inhouse_csv =    report(DIR_OUT + 'DFclinical_full_inhouse.csv', category="Clinical data sets", subcategory="full inhouse data set"),     # create_clinicalDF
+        Mset_full   = DIR_MSET + 'Mset_full.RDS',                            # create_clinicalDF
+        betas_full   = DIR_BETAS + 'betas_full.RDS',                            # create_clinicalDF
     params:
         dir_betas = DIR_BETAS,
         dir_mnp = DIR_MNP,
@@ -258,10 +262,10 @@ rule create_clinicalDF:
 
 rule check_QC:
     input:
-        sentrix  = expand(DIR_FULL_COHORT + '{sentrix_cohort}_Grn.idat', sentrix_cohort=SENTRIXS_COHORT.keys()),
-        RGset  = DIR_RGSET + 'RGset.RDS',                             # create_RGset
-        Mset  = DIR_MSET + 'Mset.RDS',                             # create_Msets
-        betas   = DIR_BETAS + 'betas.RDS',                            # create_betas
+        # sentrix  = expand(DIR_FULL_COHORT + '{sentrix_cohort}_Grn.idat', sentrix_cohort=SENTRIXS_COHORT.keys()),
+        # RGset  = DIR_RGSET + 'RGset.RDS',                             # create_RGset
+        Mset_full   = DIR_MSET + 'Mset_full.RDS',                            # create_clinicalDF
+        betas_full   = DIR_BETAS + 'betas_full.RDS',                            # create_clinicalDF
         DFclinical_full_cohort =    DIR_OUT + 'DFclinical_full_cohort.RDS',     # create_clinicalDF
         DFclinical_full_gliomas =   DIR_OUT + 'DFclinical_full_gliomas.RDS',    # create_clinicalDF
         DFclinical_full_inhouse =   DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
@@ -291,31 +295,34 @@ rule check_QC:
 
 rule create_tSNE:
     input:
-        betas_cohort =          DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
-        betas_gliomas =         DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
-        betas_inhouse =         DIR_BETAS + 'betas_full_inhouse.RDS',            # check_QC 
-        DFclinical_cohort =     DIR_OUT + 'DFclinical_cohort.RDS',# create_clinicalDF
-        DFclinical_gliomas =    DIR_OUT + 'DFclinical_gliomas.RDS',    # create_clinicalDF
-        DFclinical_inhouse =    DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
+        betas_full =                 DIR_BETAS + 'betas_full.RDS',
+        #betas_cohort =          DIR_BETAS + 'betas_cohort.RDS',             # check_QC 
+        #betas_gliomas =         DIR_BETAS + 'betas_gliomas.RDS',            # check_QC 
+        betas_inhouse =         DIR_BETAS + 'betas_inhouse.RDS',            # check_QC 
+        #DFclinical_cohort =     DIR_OUT + 'DFclinical_cohort.RDS',# create_clinicalDF
+        #DFclinical_gliomas =    DIR_OUT + 'DFclinical_gliomas.RDS',    # create_clinicalDF
+        DFclinical_inhouse =    DIR_OUT + 'DFclinical_inhouse.RDS',    # create_clinicalDF
+        DFclinical_full_inhouse =    DIR_OUT + 'DFclinical_full_inhouse.RDS',    # create_clinicalDF
     output:
-        pca_cohort =        DIR_PCA + 'pca_cohort.RDS',            # create_tSNE
-        pca_gliomas =       DIR_PCA + 'pca_gliomas.RDS',    # create_tSNE
+        #pca_cohort =        DIR_PCA + 'pca_cohort.RDS',            # create_tSNE
+        #pca_gliomas =       DIR_PCA + 'pca_gliomas.RDS',    # create_tSNE
         pca_inhouse =       DIR_PCA + 'pca_inhouse.RDS',    # create_tSNE
-        tsne_cohort =               DIR_RDS + 'tsne_cohort.RDS',        # create_tSNE
-        tsne_gliomas =              DIR_RDS + 'tsne_gliomas.RDS',       # create_tSNE
-        tsne_inhouse =              DIR_RDS + 'tsne_inhouse.RDS',       # create_tSNE
-        # tsne_cohort =               report(DIR_RDS + 'tsne_cohort.RDS', category="tSNE", subcategory="cohort"),   # create_tSNE
-        # tsne_gliomas =              report(DIR_RDS + 'tsne_gliomas.RDS', category="tSNE", subcategory="cohort and gliomas"),       # create_tSNE
-        # tsne_inhouse =              report(DIR_RDS + 'tsne_inhouse.RDS', category="tSNE", subcategory="cohort and inhouse"),       # create_tSNE
-        tsneplot_cohort_Type =              report(DIR_TSNE + 'tsneplot_cohort_Type.png', category="tSNE", subcategory="cohort"),         # create_tSNE
-        tsneplot_cohort_TypeSurvival =      report(DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', category="tSNE", subcategory="cohort"), # create_tSNE
-        tsneplot_cohort_ID =                report(DIR_TSNE + 'tsneplot_cohort_ID.png', category="tSNE", subcategory="cohort"),          # create_tSNE
-        tsneplot_gliomas_Type =             report(DIR_TSNE + 'tsneplot_gliomas_Type.png', category="tSNE", subcategory="cohort and gliomas"),             # create_tSNE
-        tsneplot_gliomas_TypeSurvival =     report(DIR_TSNE + 'tsneplot_gliomas_TypeSurvival.png', category="tSNE", subcategory="cohort and gliomas"),     # create_tSNE
-        tsneplot_gliomas_ID =               report(DIR_TSNE + 'tsneplot_gliomas_ID.png', category="tSNE", subcategory="cohort and gliomas"),              # create_tSNE
+        #tsne_cohort =               DIR_RDS + 'tsne_cohort.RDS',        # create_tSNE
+        #tsne_gliomas =              DIR_RDS + 'tsne_gliomas.RDS',       # create_tSNE
+        #tsne_inhouse =              DIR_RDS + 'tsne_inhouse.RDS',       # create_tSNE
+        #tsne_cohort =               report(DIR_RDS + 'tsne_cohort.RDS', category="tSNE", subcategory="cohort"),   # create_tSNE
+        #tsne_gliomas =              report(DIR_RDS + 'tsne_gliomas.RDS', category="tSNE", subcategory="cohort and gliomas"),       # create_tSNE
+        tsne_inhouse =              report(DIR_RDS + 'tsne_inhouse.RDS', category="tSNE", subcategory="cohort and inhouse"),       # create_tSNE
+        #tsneplot_cohort_Type =              report(DIR_TSNE + 'tsneplot_cohort_Type.png', category="tSNE", subcategory="cohort"),         # create_tSNE
+        #tsneplot_cohort_TypeSurvival =      report(DIR_TSNE + 'tsneplot_cohort_TypeSurvival.png', category="tSNE", subcategory="cohort"), # create_tSNE
+        #tsneplot_cohort_ID =                report(DIR_TSNE + 'tsneplot_cohort_ID.png', category="tSNE", subcategory="cohort"),          # create_tSNE
+        #tsneplot_gliomas_Type =             report(DIR_TSNE + 'tsneplot_gliomas_Type.png', category="tSNE", subcategory="cohort and gliomas"),             # create_tSNE
+        #tsneplot_gliomas_TypeSurvival =     report(DIR_TSNE + 'tsneplot_gliomas_TypeSurvival.png', category="tSNE", subcategory="cohort and gliomas"),     # create_tSNE
+        #tsneplot_gliomas_ID =               report(DIR_TSNE + 'tsneplot_gliomas_ID.png', category="tSNE", subcategory="cohort and gliomas"),              # create_tSNE
         tsneplot_inhouse_Type =             report(DIR_TSNE + 'tsneplot_inhouse_Type.png', category="tSNE", subcategory="cohort and inhouse"),             # create_tSNE
         tsneplot_inhouse_TypeSurvival =     report(DIR_TSNE + 'tsneplot_inhouse_TypeSurvival.png', category="tSNE", subcategory="cohort"),     # create_tSNE
         tsneplot_inhouse_ID =               report(DIR_TSNE + 'tsneplot_inhouse_ID.png', category="tSNE", subcategory="cohort and inhouse"),              # create_tSNE
+        tsneplot_inhouse_BadSample =               report(DIR_TSNE + 'tsneplot_inhouse_BadSample.png', category="tSNE", subcategory="cohort and inhouse"),              # create_tSNE
     params:
         # sd_filter = 32000,
         # dir_pca_sd = DIR_PCA_SD,
@@ -347,6 +354,7 @@ rule create_CNVplot:
         dir_mnp     = DIR_MNP,
         dir_cnv = DIR_CNV,
         dir_cnv_rds = DIR_CNV_RDS,
+        # algorithm = ['QDNAseq', 'conumee'],  # make different versions of CNVplots
         suppressMessages    = config['options']['suppressMessages'],
     log:
         DIR_LOG + "create_CNVplot/{sentrix_cohort}.log"

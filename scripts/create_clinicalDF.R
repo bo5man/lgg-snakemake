@@ -26,6 +26,7 @@ if (msg){
 
 ##################
 # # input file paths
+pMset <- snakemake@input[["Mset"]]
 pbetas <- snakemake@input[["betas"]]
 # pbetas <- './../results/betas/betas.RDS'
 
@@ -36,6 +37,8 @@ pDFclinical_full_inhouse <-      snakemake@output[["DFclinical_full_inhouse"]]
 # pDFclinical_full_gliomas <-      './../results/DFclinical_full_gliomas.RDS'
 pDFclinical_full_cohort_csv <-      snakemake@output[["DFclinical_full_cohort_csv"]]
 pDFclinical_full_inhouse_csv <-      snakemake@output[["DFclinical_full_inhouse_csv"]]
+pMset_full <- snakemake@output[["Mset_full"]]
+pbetas_full <- snakemake@output[["betas_full"]]
 
 # # parameters
 # pinhouse <- './../../LGG_Methylation/Yongsoo VUMC methylation arrat samples sep 2020.xlsx'
@@ -56,6 +59,7 @@ sink(log, append=T, split=FALSE, type='message')
 ##################
 
 # read input
+Mset <- readRDS(pMset)
 betas <- readRDS(pbetas)
 
 # # # read clinical data files
@@ -66,7 +70,7 @@ cohort_full <- read.xlsx(pcohort, sep = '_')
 inhouse <- inhouse_full[,c('Sentrix_ID', 'Methylatie_array_uitkomst_schoon', 'Classifier_methylation_subclass_(only_for_predicted_methylation_class_families,_cut-off_0.5)_schoon')]
 # # # select cohort data
 # cohort <- cohort_full[,c('Sample_ID_Long_vs_Short_Survivor_(LSS)','SENTRIX_ID','Sufficient_DNA_and_paid_for', 'Shallow_Sequencing_Result', 'long_or_short_(>100_months_-_<40_months)', 'Sex_(M/F)')]
-cohort <- cohort_full[!is.na(cohort_full$SENTRIX_ID),c('Sample_ID_Long_vs_Short_Survivor_(LSS)','SENTRIX_ID','Sufficient_DNA_and_paid_for', 'Methylation_subclasses', 'long_or_short_(>100_months_-_<40_months)', 'Sex_(M/F)')]
+cohort <- cohort_full[!is.na(cohort_full$SENTRIX_ID),c('Sample_ID_Long_vs_Short_Survivor_(LSS)','SENTRIX_ID','Sufficient_DNA_and_paid_for', 'Methylation_classes','Methylation_subclasses', 'long_or_short_(>100_months_-_<40_months)', 'Sex_(M/F)')]
 
 Selected1p19q <- unique(str_subset(inhouse$`Classifier_methylation_subclass_(only_for_predicted_methylation_class_families,_cut-off_0.5)_schoon`, '1p/19q'))
 
@@ -88,14 +92,12 @@ sDF_full_inhouse <- data.frame(
                                  inhouse$Sentrix_ID[iSelected1p19q],
                                  inhouse$Sentrix_ID[iOtherSelectedGliomas]
                                  ),
-                         Type = c(cohort$Methylation_subclasses[iFullCohort],
+                         Type = c(ifelse(is.na(cohort$Methylation_subclasses[iFullCohort]),cohort$Methylation_classes[iFullCohort],paste(cohort$Methylation_classes[iFullCohort], cohort$Methylation_subclasses[iFullCohort],sep=', ')),
                                  ifelse(is.na(inhouse[iSelected1p19q,3]), inhouse[iSelected1p19q,2], paste(inhouse[iSelected1p19q,2],inhouse[iSelected1p19q,3], sep=', ')),
                                  ifelse(is.na(inhouse[iOtherSelectedGliomas,3]), inhouse[iOtherSelectedGliomas,2], paste(inhouse[iOtherSelectedGliomas,2],inhouse[iOtherSelectedGliomas,3], sep=', '))
                                  ),
-#                                  inhouse$Methylatie_array_uitkomst_schoon[iSelected1p19q],
-#                                  inhouse$Methylatie_array_uitkomst_schoon[iOtherSelectedGliomas]
-#                                  ),
-                         TypeSurvival = c(paste('cohort', cohort$`long_or_short_(>100_months_-_<40_months)`[iFullCohort], 'survivor'),
+                        #TypeSurvival = c(paste('cohort', cohort$`long_or_short_(>100_months_-_<40_months)`[iFullCohort], 'survivor'),
+                         TypeSurvival = c(paste(cohort$`long_or_short_(>100_months_-_<40_months)`[iFullCohort], 'survivor'),
                                  rep('Selected1p19q',length(inhouse$Sentrix_ID[iSelected1p19q])),
                                  rep('OtherSelectedGliomas',length(inhouse$Sentrix_ID[iOtherSelectedGliomas]))
                                  ),
@@ -109,6 +111,9 @@ rownames(sDF_full_inhouse) <- sDF_full_inhouse$Sentrix_ID
 # # select betas of full inhouse and full cohort
 sentrixs_full_inhouse <- intersect(sDF_full_inhouse$Sentrix_ID,rownames(betas))
 sDF_full_inhouse <- sDF_full_inhouse[sDF_full_inhouse$Sentrix_ID %in% sentrixs_full_inhouse,]
+Mset_full <- Mset[,sentrixs_full_inhouse]
+betas_full <- betas[sentrixs_full_inhouse,]
+
 
 message('saving clinical dataframe for full inhouse and full cohort in ', pDFclinical_full_inhouse)
 saveRDS(sDF_full_inhouse, file = pDFclinical_full_inhouse)
@@ -116,6 +121,12 @@ saveRDS(sDF_full_inhouse, file = pDFclinical_full_inhouse)
 message('saving clinical dataframe as cnv for for inhouse and full cohort in ', pDFclinical_full_inhouse_csv)
 write.csv2(sDF_full_inhouse, file = pDFclinical_full_inhouse_csv)
 
+
+message('saving Mset for full inhouse and full cohort in ', pMset_full)
+saveRDS(Mset_full, file = pMset_full)
+
+message('saving betas for full inhouse and full cohort in ', pbetas_full)
+saveRDS(betas_full, file = pbetas_full)
 
 # # select full cohort and 1p19q inhouse
 
